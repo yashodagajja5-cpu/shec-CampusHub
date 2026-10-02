@@ -1,0 +1,201 @@
+/* =========================================
+   SHEC CampusHub - Hostel
+   ========================================= */
+
+.hostel-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  padding: 28px 32px;
+  color: #252b42;
+}
+
+/* ---------- Top Bar ---------- */
+
+.hostel-topbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.hostel-back-btn {
+  border: none;
+  background: #ffffff;
+  color: #5b3cc4;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(50, 40, 100, 0.08);
+}
+
+.hostel-back-btn:hover {
+  background: #f0ebff;
+}
+
+.hostel-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 750;
+}
+
+.hostel-subtitle {
+  margin: 6px 0 0;
+  color: #737991;
+  font-size: 14px;
+}
+
+/* ---------- Summary ---------- */
+
+.hostel-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.hostel-summary-card {
+  background: #ffffff;
+  border: 1px solid #ececf3;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 18px rgba(50, 40, 100, 0.06);
+}
+
+.hostel-summary-card span {
+  display: block;
+  color: #858a9d;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+.hostel-summary-card strong {
+  color: #5b3cc4;
+  font-size: 18px;
+}
+
+/* ---------- Main Section ---------- */
+
+.hostel-section {
+  background: #ffffff;
+  border: 1px solid #ececf3;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 5px 18px rgba(50, 40, 100, 0.06);
+}
+
+.hostel-section-header {
+  margin-bottom: 20px;
+}
+
+.hostel-section-header h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.hostel-section-header p {
+  margin: 5px 0 0;
+  color: #858a9d;
+  font-size: 13px;
+}
+
+/* ---------- Facilities ---------- */
+
+.hostel-facilities {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.hostel-facility-card {
+  display: flex;
+  gap: 15px;
+  padding: 18px;
+  border: 1px solid #eeeeF4;
+  border-radius: 14px;
+  background: #fafafe;
+}
+
+.hostel-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  background: #f0ebff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.hostel-facility-card h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: #30364d;
+}
+
+.hostel-facility-card p {
+  margin: 0;
+  color: #777d90;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ---------- Notice ---------- */
+
+.hostel-notice {
+  margin-top: 22px;
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 14px;
+  background: #f5f1ff;
+  border: 1px solid #e5dcff;
+}
+
+.hostel-notice-icon {
+  font-size: 22px;
+}
+
+.hostel-notice h3 {
+  margin: 0 0 5px;
+  font-size: 15px;
+  color: #5b3cc4;
+}
+
+.hostel-notice p {
+  margin: 0;
+  color: #6f6788;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ---------- Footer ---------- */
+
+.hostel-footer {
+  margin-top: 22px;
+  text-align: center;
+  color: #9297a8;
+  font-size: 12px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 800px) {
+  .hostel-page {
+    padding: 20px 15px;
+  }
+
+  .hostel-title {
+    font-size: 23px;
+  }
+
+  .hostel-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .hostel-facilities {
+    grid-template-columns: 1fr;
+  }
+}

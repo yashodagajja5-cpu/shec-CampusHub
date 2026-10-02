@@ -1,0 +1,262 @@
+/* =========================
+   FACULTY SUBJECTS
+========================= */
+
+.faculty-subject-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 18px;
+}
+
+.faculty-subject-card {
+  background: #ffffff;
+  border: 1px solid #e7e4f2;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 25px rgba(75, 61, 120, 0.06);
+  transition: 0.2s ease;
+}
+
+.faculty-subject-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(75, 61, 120, 0.11);
+}
+
+.subject-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.subject-code {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eeeaff;
+  color: #6847c7;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.subject-type {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #edf8f1;
+  color: #23844d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.faculty-subject-card h3 {
+  margin: 0 0 18px;
+  color: #24213b;
+  font-size: 19px;
+}
+
+.subject-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.subject-details div {
+  padding: 12px;
+  background: #f8f7fc;
+  border-radius: 12px;
+}
+
+.subject-details span,
+.modal-details-grid span {
+  display: block;
+  font-size: 11px;
+  color: #817d91;
+  margin-bottom: 5px;
+}
+
+.subject-details strong,
+.modal-details-grid strong {
+  display: block;
+  color: #39344d;
+  font-size: 13px;
+}
+
+.subject-progress {
+  margin-bottom: 20px;
+}
+
+.progress-heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #5d586d;
+  margin-bottom: 8px;
+}
+
+.progress-heading strong {
+  color: #6847c7;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #eceaf2;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #7554d6;
+  border-radius: 20px;
+}
+
+.subject-progress p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  color: #858091;
+}
+
+.subject-view-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 11px;
+  padding: 12px;
+  background: #f0edff;
+  color: #6847c7;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.subject-view-btn:hover {
+  background: #e4dfff;
+}
+
+/* Modal */
+
+.faculty-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 30, 55, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.faculty-modal {
+  position: relative;
+  width: min(650px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(25, 20, 50, 0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  width: 35px;
+  height: 35px;
+  border: 0;
+  border-radius: 50%;
+  background: #f3f1f8;
+  color: #514b62;
+  font-size: 23px;
+  cursor: pointer;
+}
+
+.modal-subject-code {
+  display: inline-flex;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #eeeaff;
+  color: #6847c7;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.faculty-modal h2 {
+  margin: 15px 0 5px;
+  color: #24213b;
+}
+
+.modal-subtitle {
+  margin: 0 0 24px;
+  color: #858091;
+  font-size: 14px;
+}
+
+.modal-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.modal-details-grid div {
+  padding: 14px;
+  background: #f8f7fc;
+  border-radius: 12px;
+}
+
+.modal-info-box {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f5f2ff;
+  border-radius: 13px;
+}
+
+.modal-info-box strong {
+  color: #6847c7;
+}
+
+.modal-info-box p {
+  margin: 7px 0 0;
+  color: #625d70;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.modal-done-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px;
+  border: 0;
+  border-radius: 11px;
+  background: #6847c7;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Responsive */
+
+@media (max-width: 800px) {
+  .faculty-subject-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .subject-details,
+  .modal-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .faculty-subject-card {
+    padding: 18px;
+  }
+
+  .faculty-modal {
+    padding: 22px;
+  }
+}

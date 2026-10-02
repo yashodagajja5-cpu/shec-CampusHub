@@ -1,0 +1,363 @@
+/* =========================================
+   NOTICES PAGE
+========================================= */
+
+.notices-page {
+  min-height: 100vh;
+  padding: 32px;
+  background: #f6f7fb;
+  color: #30384d;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.notices-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+
+.notices-back-btn {
+  border: none;
+  background: #ffffff;
+  color: #5b4bb7;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(50, 40, 90, 0.08);
+}
+
+.notices-back-btn:hover {
+  background: #f0edff;
+}
+
+.notices-title {
+  text-align: right;
+}
+
+.notices-title p {
+  margin: 0 0 5px;
+  color: #7b6fd0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.notices-title h1 {
+  margin: 0;
+  color: #29324a;
+  font-size: 30px;
+}
+
+.notices-title span {
+  display: block;
+  margin-top: 5px;
+  color: #858da0;
+  font-size: 13px;
+}
+
+/* =========================================
+   NOTICE SUMMARY
+========================================= */
+
+.notices-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 17px;
+  margin-bottom: 22px;
+}
+
+.notice-summary-card {
+  background: #ffffff;
+  border: 1px solid #e9e9f1;
+  border-radius: 16px;
+  padding: 19px;
+  box-shadow: 0 5px 18px rgba(40, 35, 80, 0.045);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.notice-summary-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f0edff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.notice-summary-card span {
+  display: block;
+  color: #8b93a4;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.notice-summary-card strong {
+  display: block;
+  margin-top: 5px;
+  color: #303951;
+  font-size: 23px;
+}
+
+/* =========================================
+   FILTER BAR
+========================================= */
+
+.notices-filter-card {
+  background: #ffffff;
+  border: 1px solid #e9e9f1;
+  border-radius: 15px;
+  padding: 17px 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 5px 18px rgba(40, 35, 80, 0.045);
+}
+
+.notices-filter-label {
+  display: block;
+  margin-bottom: 10px;
+  color: #596277;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.notices-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.notice-filter-btn {
+  border: 1px solid #e1e1ec;
+  background: #ffffff;
+  color: #697287;
+  padding: 9px 15px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.notice-filter-btn:hover {
+  border-color: #8a7bd8;
+  color: #6253bd;
+}
+
+.notice-filter-btn.active {
+  background: #6757c8;
+  border-color: #6757c8;
+  color: #ffffff;
+}
+
+/* =========================================
+   NOTICE LIST
+========================================= */
+
+.notices-list {
+  display: grid;
+  gap: 15px;
+}
+
+.notice-card {
+  background: #ffffff;
+  border: 1px solid #e9e9f1;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 18px rgba(40, 35, 80, 0.045);
+  transition: 0.2s ease;
+}
+
+.notice-card:hover {
+  transform: translateY(-2px);
+  border-color: #d9d3fa;
+  box-shadow: 0 9px 23px rgba(40, 35, 80, 0.08);
+}
+
+.notice-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.notice-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.notice-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f0edff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.notice-category {
+  margin: 0 0 5px;
+  color: #6c5bc7;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.notice-card h3 {
+  margin: 0;
+  color: #30384d;
+  font-size: 16px;
+}
+
+.notice-description {
+  margin: 8px 0 0;
+  color: #7b8497;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.notice-date {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f7f6ff;
+  color: #7166a7;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =========================================
+   NOTICE DETAILS
+========================================= */
+
+.notice-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 17px;
+  padding-top: 15px;
+  border-top: 1px solid #f0f0f5;
+}
+
+.notice-issued-by {
+  color: #9299a9;
+  font-size: 10px;
+}
+
+.notice-issued-by strong {
+  color: #596277;
+}
+
+.notice-view-btn {
+  border: none;
+  background: #f0edff;
+  color: #6253b8;
+  padding: 8px 13px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notice-view-btn:hover {
+  background: #e5e1ff;
+}
+
+/* =========================================
+   IMPORTANT NOTICE
+========================================= */
+
+.notice-card.important {
+  border-left: 4px solid #7665cf;
+}
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.notices-empty {
+  background: #ffffff;
+  border: 1px solid #e9e9f1;
+  border-radius: 16px;
+  padding: 55px 20px;
+  text-align: center;
+}
+
+.notices-empty-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.notices-empty h3 {
+  margin: 0 0 6px;
+  color: #424b61;
+  font-size: 17px;
+}
+
+.notices-empty p {
+  margin: 0;
+  color: #858da0;
+  font-size: 12px;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.notices-footer {
+  margin-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  color: #9aa1b0;
+  font-size: 10px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+  .notices-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .notices-page {
+    padding: 20px;
+  }
+
+  .notices-title h1 {
+    font-size: 24px;
+  }
+
+  .notice-card-header {
+    flex-direction: column;
+  }
+
+  .notice-details {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .notices-footer {
+    flex-direction: column;
+    gap: 6px;
+  }
+}

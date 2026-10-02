@@ -1,0 +1,291 @@
+/* =========================================
+   SHEC CampusHub - Study Materials
+   ========================================= */
+
+.study-materials-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  padding: 28px 32px;
+  color: #252b42;
+}
+
+/* ---------- Top Bar ---------- */
+
+.study-materials-topbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.study-materials-back-btn {
+  border: none;
+  background: #ffffff;
+  color: #5b3cc4;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(50, 40, 100, 0.08);
+}
+
+.study-materials-back-btn:hover {
+  background: #f0ebff;
+}
+
+.study-materials-title-area {
+  flex: 1;
+}
+
+.study-materials-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 750;
+  color: #252b42;
+}
+
+.study-materials-subtitle {
+  margin: 6px 0 0;
+  color: #737991;
+  font-size: 14px;
+}
+
+/* ---------- Summary ---------- */
+
+.materials-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.material-summary-card {
+  background: #ffffff;
+  border: 1px solid #ececf3;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 18px rgba(50, 40, 100, 0.06);
+}
+
+.material-summary-label {
+  font-size: 12px;
+  color: #858a9d;
+  margin-bottom: 7px;
+}
+
+.material-summary-value {
+  font-size: 25px;
+  font-weight: 750;
+  color: #30364d;
+}
+
+/* ---------- Filter ---------- */
+
+.materials-filter-card {
+  background: #ffffff;
+  border: 1px solid #ececf3;
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 5px 18px rgba(50, 40, 100, 0.05);
+}
+
+.materials-filter-label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #555b70;
+}
+
+.materials-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.material-filter-btn {
+  border: 1px solid #dedbea;
+  background: #ffffff;
+  color: #666c80;
+  padding: 9px 15px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.material-filter-btn:hover {
+  background: #f5f1ff;
+  color: #5b3cc4;
+  border-color: #cfc2f5;
+}
+
+.material-filter-btn.active {
+  background: #5b3cc4;
+  color: #ffffff;
+  border-color: #5b3cc4;
+}
+
+/* ---------- Materials Grid ---------- */
+
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.material-card {
+  background: #ffffff;
+  border: 1px solid #ececf3;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 5px 18px rgba(50, 40, 100, 0.06);
+  transition: 0.2s ease;
+}
+
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(50, 40, 100, 0.09);
+}
+
+.material-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.material-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #f0ebff;
+  color: #5b3cc4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  flex-shrink: 0;
+}
+
+.material-main {
+  flex: 1;
+}
+
+.material-subject {
+  margin: 0 0 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b4bd6;
+}
+
+.material-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #30364d;
+  line-height: 1.4;
+}
+
+.material-description {
+  margin: 13px 0 16px;
+  color: #777d90;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.material-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid #eeeeF4;
+}
+
+.material-type {
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: #f5f5f9;
+  color: #6d7284;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.material-view-btn {
+  border: none;
+  background: #5b3cc4;
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.material-view-btn:hover {
+  background: #4d31ad;
+}
+
+/* ---------- Empty State ---------- */
+
+.materials-empty {
+  background: #ffffff;
+  border: 1px solid #ececf3;
+  border-radius: 18px;
+  padding: 45px 20px;
+  text-align: center;
+  color: #858a9d;
+}
+
+.materials-empty-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.materials-empty h3 {
+  margin: 0 0 6px;
+  color: #454b60;
+}
+
+.materials-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+/* ---------- Footer ---------- */
+
+.materials-footer {
+  margin-top: 22px;
+  text-align: center;
+  color: #9297a8;
+  font-size: 12px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 850px) {
+  .materials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .materials-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .study-materials-page {
+    padding: 20px 15px;
+  }
+
+  .study-materials-title {
+    font-size: 23px;
+  }
+
+  .material-card {
+    padding: 16px;
+  }
+}

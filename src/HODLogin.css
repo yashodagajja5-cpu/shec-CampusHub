@@ -1,0 +1,401 @@
+/* =================================
+   HOD LOGIN PAGE
+================================= */
+
+.hod-login-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  background: #f7f5fb;
+}
+
+/* LEFT SIDE */
+
+.hod-login-left {
+  position: relative;
+  padding: 45px 55px;
+  background: linear-gradient(
+    145deg,
+    #f1ebff 0%,
+    #f8f3ff 55%,
+    #fff3fa 100%
+  );
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hod-login-left::before {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(126, 88, 220, 0.08);
+  top: -130px;
+  right: -100px;
+}
+
+.hod-login-left::after {
+  content: "";
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: rgba(232, 115, 177, 0.07);
+  bottom: -100px;
+  left: -80px;
+}
+
+.hod-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.hod-brand-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7048d8, #a66bea);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.hod-brand h2 {
+  margin: 0;
+  color: #302844;
+  font-size: 18px;
+}
+
+.hod-brand p {
+  margin: 3px 0 0;
+  color: #81788f;
+  font-size: 11px;
+  max-width: 330px;
+}
+
+.hod-welcome {
+  position: relative;
+  z-index: 1;
+  margin: auto 0;
+  max-width: 600px;
+}
+
+.hod-small-label {
+  display: inline-block;
+  background: #e9dfff;
+  color: #6944c5;
+  border-radius: 20px;
+  padding: 7px 13px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.hod-welcome h1 {
+  margin: 22px 0 18px;
+  color: #29233b;
+  font-size: clamp(38px, 4vw, 58px);
+  line-height: 1.08;
+}
+
+.hod-welcome h1 span {
+  color: #754dd3;
+}
+
+.hod-welcome > p {
+  max-width: 530px;
+  color: #6e667b;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.hod-login-features {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.hod-login-features div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #4d465a;
+  font-size: 13px;
+}
+
+.hod-login-features span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e5f7ec;
+  color: #269052;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.hod-login-footer {
+  position: relative;
+  z-index: 1;
+  color: #91899c;
+  font-size: 12px;
+}
+
+/* RIGHT SIDE */
+
+.hod-login-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+  background: white;
+}
+
+.hod-login-card {
+  width: 100%;
+  max-width: 440px;
+}
+
+.hod-login-back {
+  border: none;
+  background: transparent;
+  color: #71687f;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 28px;
+}
+
+.hod-login-back:hover {
+  color: #6845c5;
+}
+
+.hod-login-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 17px;
+  background: #f0eaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 18px;
+}
+
+.hod-login-card h1 {
+  margin: 0;
+  color: #2b2639;
+  font-size: 31px;
+}
+
+.hod-login-subtitle {
+  margin: 8px 0 30px;
+  color: #847c90;
+  font-size: 14px;
+}
+
+/* INPUTS */
+
+.hod-login-field {
+  margin-bottom: 19px;
+}
+
+.hod-login-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #494153;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hod-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #ddd7e7;
+  background: #fbfaff;
+  border-radius: 11px;
+  padding: 0 13px;
+}
+
+.hod-input-wrapper:focus-within {
+  border-color: #8a67df;
+  box-shadow: 0 0 0 3px rgba(138, 103, 223, 0.1);
+}
+
+.hod-input-wrapper > span {
+  font-size: 15px;
+}
+
+.hod-input-wrapper input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 13px 0;
+  color: #332e40;
+  font-size: 14px;
+}
+
+.hod-input-wrapper input::placeholder {
+  color: #aaa2b1;
+}
+
+.hod-show-password {
+  border: none;
+  background: transparent;
+  color: #704bc9;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* OPTIONS */
+
+.hod-login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 0 22px;
+}
+
+.hod-login-options label {
+  color: #756d80;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hod-login-options button {
+  border: none;
+  background: transparent;
+  color: #6c48c6;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* LOGIN BUTTON */
+
+.hod-login-submit {
+  width: 100%;
+  border: none;
+  border-radius: 11px;
+  padding: 14px;
+  background: linear-gradient(135deg, #7048d8, #8a5ce0);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(112, 72, 216, 0.2);
+}
+
+.hod-login-submit:hover {
+  transform: translateY(-1px);
+}
+
+/* DEMO LOGIN */
+
+.hod-demo-login {
+  margin-top: 22px;
+  padding: 15px;
+  border: 1px dashed #d8cef0;
+  background: #faf8ff;
+  border-radius: 12px;
+}
+
+.hod-demo-login strong {
+  display: block;
+  color: #6743c0;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+
+.hod-demo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.hod-demo-row span {
+  color: #81798c;
+  font-size: 12px;
+}
+
+.hod-demo-row code {
+  color: #40384d;
+  background: #f0edf5;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-size: 11px;
+}
+
+.hod-login-security {
+  text-align: center;
+  color: #9a92a2;
+  font-size: 11px;
+  margin: 20px 0 0;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .hod-login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .hod-login-left {
+    min-height: 430px;
+    padding: 30px;
+  }
+
+  .hod-welcome {
+    margin: 60px 0 30px;
+  }
+
+  .hod-welcome h1 {
+    font-size: 42px;
+  }
+
+  .hod-login-right {
+    padding: 40px 25px;
+  }
+}
+
+@media (max-width: 550px) {
+  .hod-login-left {
+    padding: 25px 20px;
+    min-height: 420px;
+  }
+
+  .hod-login-features {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .hod-welcome h1 {
+    font-size: 34px;
+  }
+
+  .hod-login-right {
+    padding: 30px 20px;
+  }
+
+  .hod-login-card h1 {
+    font-size: 27px;
+  }
+}

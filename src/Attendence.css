@@ -1,0 +1,337 @@
+/* =========================================
+   SHEC CampusHub - Attendence Page
+   ========================================= */
+
+.attendance-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  padding: 28px 32px;
+  color: #252b42;
+}
+
+/* ---------- Top Bar ---------- */
+
+.attendance-topbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.attendance-back-btn {
+  border: none;
+  background: #ffffff;
+  color: #5b3cc4;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(50, 40, 100, 0.08);
+  transition: 0.2s ease;
+}
+
+.attendance-back-btn:hover {
+  background: #f0ebff;
+  transform: translateY(-1px);
+}
+
+.attendance-title-area {
+  flex: 1;
+}
+
+.attendance-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 750;
+  color: #252b42;
+}
+
+.attendance-subtitle {
+  margin: 6px 0 0;
+  color: #737991;
+  font-size: 14px;
+}
+
+/* ---------- Overall Attendance ---------- */
+
+.attendance-overview {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.attendance-main-card,
+.attendance-stat-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid #ececf3;
+  box-shadow: 0 5px 18px rgba(50, 40, 100, 0.06);
+}
+
+.attendance-main-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.attendance-circle {
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  background: #f0eaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.attendance-circle-inner {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.attendance-percentage {
+  font-size: 24px;
+  font-weight: 800;
+  color: #5b3cc4;
+}
+
+.attendance-percentage-label {
+  font-size: 11px;
+  color: #888da0;
+}
+
+.attendance-main-info h2 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  color: #30364d;
+}
+
+.attendance-main-info p {
+  margin: 0;
+  color: #7c8194;
+  font-size: 13px;
+}
+
+.attendance-stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.attendance-stat-label {
+  font-size: 13px;
+  color: #7b8196;
+  margin-bottom: 8px;
+}
+
+.attendance-stat-value {
+  font-size: 26px;
+  font-weight: 750;
+  color: #30364d;
+}
+
+.attendance-stat-note {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #9297a8;
+}
+
+/* ---------- Subject Section ---------- */
+
+.attendance-section {
+  background: #ffffff;
+  border: 1px solid #ececf3;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 5px 18px rgba(50, 40, 100, 0.06);
+}
+
+.attendance-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.attendance-section-header h2 {
+  margin: 0;
+  font-size: 19px;
+  color: #30364d;
+}
+
+.attendance-section-header p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: #858a9d;
+}
+
+/* ---------- Table ---------- */
+
+.attendance-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.attendance-table th {
+  text-align: left;
+  padding: 14px 16px;
+  background: #f8f7fc;
+  color: #686e84;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.attendance-table th:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+.attendance-table th:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+.attendance-table td {
+  padding: 16px;
+  border-bottom: 1px solid #eeeeF4;
+  font-size: 14px;
+  color: #42485d;
+}
+
+.attendance-table tr:last-child td {
+  border-bottom: none;
+}
+
+.attendance-subject {
+  font-weight: 650;
+  color: #30364d;
+}
+
+.attendance-number {
+  font-weight: 600;
+}
+
+/* ---------- Percentage Badge ---------- */
+
+.attendance-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.attendance-good {
+  background: #e9f8ef;
+  color: #27834c;
+}
+
+.attendance-medium {
+  background: #fff4df;
+  color: #a66a00;
+}
+
+.attendance-low {
+  background: #ffe9e9;
+  color: #c54a4a;
+}
+
+/* ---------- Progress Bar ---------- */
+
+.attendance-progress {
+  width: 120px;
+  height: 7px;
+  background: #eeeeF5;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.attendance-progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  background: #6b4bd6;
+}
+
+/* ---------- Footer ---------- */
+
+.attendance-footer {
+  margin-top: 22px;
+  text-align: center;
+  color: #9297a8;
+  font-size: 12px;
+}
+
+.attendance-footer strong {
+  color: #6b4bd6;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1100px) {
+  .attendance-overview {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .attendance-main-card {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 700px) {
+  .attendance-page {
+    padding: 20px 15px;
+  }
+
+  .attendance-topbar {
+    align-items: flex-start;
+  }
+
+  .attendance-title {
+    font-size: 23px;
+  }
+
+  .attendance-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .attendance-main-card {
+    grid-column: span 1;
+  }
+
+  .attendance-section {
+    padding: 16px;
+  }
+
+  .attendance-circle {
+    width: 85px;
+    height: 85px;
+  }
+
+  .attendance-circle-inner {
+    width: 66px;
+    height: 66px;
+  }
+
+  .attendance-percentage {
+    font-size: 19px;
+  }
+}
