@@ -41,7 +41,7 @@ const LEADERS = [
   },
   {
     role: "PRINCIPAL",
-    name: "Principal",
+    name: "Dr.Srinivasarao Madala.",
     image: "/principal.jpg",
     description: "Principal, SHEC",
   },
