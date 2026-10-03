@@ -8,7 +8,7 @@ import FacultyMaterials from "./FacultyMaterials";
 import FacultyNotices from "./FacultyNotices";
 import FacultyProfile from "./FacultyProfile";
 
-import "./facultyDashboard.css";
+import "./FacultyDashboard.css";
 
 function FacultyDashboard({ onLogout }) {
   const [activePage, setActivePage] = useState("dashboard");
