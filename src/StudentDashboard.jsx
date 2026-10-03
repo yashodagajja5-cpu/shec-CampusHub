@@ -180,9 +180,11 @@ function StudentDashboard({ onLogout }) {
             Hostel
           </button>
 
+          {/* LETTERS & CERTIFICATES */}
+
           <button onClick={() => openPage("requests")}>
             <span>📄</span>
-            Requests
+            Letters & Certificates
           </button>
 
           <button onClick={() => openPage("feedback")}>
@@ -309,7 +311,6 @@ function StudentDashboard({ onLogout }) {
             </div>
           </div>
 
-
           <div
             className="overview-card clickable-card"
             onClick={() => openPage("assignments")}
@@ -324,7 +325,6 @@ function StudentDashboard({ onLogout }) {
             </div>
           </div>
 
-
           <div
             className="overview-card clickable-card"
             onClick={() => openPage("results")}
@@ -338,7 +338,6 @@ function StudentDashboard({ onLogout }) {
               <strong>8.82</strong>
             </div>
           </div>
-
 
           <div
             className="overview-card clickable-card"
@@ -382,7 +381,6 @@ function StudentDashboard({ onLogout }) {
 
             </div>
 
-
             <div className="class-list">
 
               <div className="class-item">
@@ -403,7 +401,6 @@ function StudentDashboard({ onLogout }) {
 
               </div>
 
-
               <div className="class-item">
 
                 <div className="class-time">
@@ -422,7 +419,6 @@ function StudentDashboard({ onLogout }) {
 
               </div>
 
-
               <div className="class-item">
 
                 <div className="class-time">
@@ -440,7 +436,6 @@ function StudentDashboard({ onLogout }) {
                 </div>
 
               </div>
-
 
               <div className="class-item">
 
@@ -464,7 +459,6 @@ function StudentDashboard({ onLogout }) {
 
           </div>
 
-
           {/* RECENT ASSIGNMENTS */}
 
           <div className="dashboard-panel">
@@ -487,7 +481,6 @@ function StudentDashboard({ onLogout }) {
 
             </div>
 
-
             <div className="mini-assignment">
 
               <div>
@@ -506,7 +499,6 @@ function StudentDashboard({ onLogout }) {
 
             </div>
 
-
             <div className="mini-assignment">
 
               <div>
@@ -524,7 +516,6 @@ function StudentDashboard({ onLogout }) {
               </span>
 
             </div>
-
 
             <div className="mini-assignment">
 
@@ -548,7 +539,6 @@ function StudentDashboard({ onLogout }) {
 
         </section>
 
-
         {/* ================= QUICK SERVICES ================= */}
 
         <section className="quick-services">
@@ -565,7 +555,6 @@ function StudentDashboard({ onLogout }) {
 
           </div>
 
-
           <div className="services-grid">
 
             <button
@@ -576,7 +565,6 @@ function StudentDashboard({ onLogout }) {
               <small>Notes & PDFs</small>
             </button>
 
-
             <button
               onClick={() => openPage("opportunities")}
             >
@@ -584,7 +572,6 @@ function StudentDashboard({ onLogout }) {
               <strong>Opportunities</strong>
               <small>Internships & Hackathons</small>
             </button>
-
 
             <button
               onClick={() => openPage("scholarships")}
@@ -594,7 +581,6 @@ function StudentDashboard({ onLogout }) {
               <small>Applications & Status</small>
             </button>
 
-
             <button
               onClick={() => openPage("hostel")}
             >
@@ -603,15 +589,15 @@ function StudentDashboard({ onLogout }) {
               <small>Hostel Information</small>
             </button>
 
+            {/* LETTERS & CERTIFICATES */}
 
             <button
               onClick={() => openPage("requests")}
             >
               <span>📄</span>
-              <strong>Requests</strong>
-              <small>Certificates & Letters</small>
+              <strong>Letters & Certificates</strong>
+              <small>Apply & Track Requests</small>
             </button>
-
 
             <button
               onClick={() => openPage("feedback")}
@@ -620,7 +606,6 @@ function StudentDashboard({ onLogout }) {
               <strong>Feedback</strong>
               <small>Share Feedback</small>
             </button>
-
 
             <button
               onClick={() => openPage("profile")}
@@ -633,7 +618,6 @@ function StudentDashboard({ onLogout }) {
           </div>
 
         </section>
-
 
         {/* ================= FOOTER ================= */}
 
