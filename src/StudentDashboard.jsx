@@ -1,639 +1,1075 @@
 import React, { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./studentDashboard.css";
-
 import Attendence from "./Attendence";
-import TimeTable from "./TimeTable";
-import StudyMaterials from "./StudyMaterials";
-import Assignments from "./Assignments";
 import Results from "./Results";
+import TimeTable from "./TimeTable";
+import Assignments from "./Assignments";
+import StudyMaterials from "./StudyMaterials";
 import Notices from "./Notices";
-import Scholarships from "./Scholarships";
 import Opportunities from "./Opportunities";
-import Hostel from "./Hostel";
-import Requests from "./Requests";
-import Feedback from "./Feedback";
-import StudentProfile from "./StudentProfile";
 
-function StudentDashboard({ onLogout }) {
+function StudentDashboard({ student, onLogout }) {
   const [activePage, setActivePage] = useState("dashboard");
 
-  const student = {
-    name: "Yashii",
-    rollNumber: "DEMO2026AI001",
-    branch: "CSE – AI & DS",
-    year: "2nd Year",
-    semester: "2-1",
-    section: "A",
-    academicYear: "2026–27",
-    attendance: 86,
+  /* ================= BACKEND DATA ================= */
+
+  const studentResults = useQuery(
+    api.results.getStudentResults,
+    student ? { studentId: student._id } : "skip"
+  );
+
+  const studentAttendance = useQuery(
+    api.attendance.getStudentAttendance,
+    student ? { studentId: student._id } : "skip"
+  );
+
+  const attendanceRecords = studentAttendance || [];
+
+  /* ================= ATTENDANCE ================= */
+
+  const totalClasses = attendanceRecords.length;
+
+  const attendedClasses = attendanceRecords.filter(
+    (record) =>
+      record.status === "Present" ||
+      record.present === true ||
+      record.isPresent === true
+  ).length;
+
+  const absentClasses = Math.max(
+    totalClasses - attendedClasses,
+    0
+  );
+
+  const attendancePercentage =
+    totalClasses > 0
+      ? Math.round((attendedClasses / totalClasses) * 100)
+      : 0;
+
+  const attendanceGood = attendancePercentage >= 75;
+
+  /* ================= RESULTS ================= */
+
+  const results = studentResults?.results || [];
+  const cgpa = studentResults?.cgpa ?? "--";
+
+  /* ================= STUDENT CHECK ================= */
+
+  if (!student) {
+    return (
+      <div className="student-dashboard-page">
+        <div className="session-error">
+          <h2>Student session not found</h2>
+
+          <button onClick={onLogout}>
+            Back to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const renderPage = () => {
+    switch (activePage) {
+      case "attendence":
+        return <Attendence student={student} />;
+      case "results":
+        return <Results student={student} />;
+      case "timetable":
+        return <TimeTable student={student} />;
+      case "assignments":
+        return <Assignments student={student} />;
+      case "study-materials":
+        return <StudyMaterials student={student} />;
+      case "notices":
+        return <Notices student={student} />;
+      case "opportunities":
+        return <Opportunities student={student} />;
+      default:
+        return null;
+    }
   };
 
-  const openPage = (page) => {
+  const goTo = (page) => {
     setActivePage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const goDashboard = () => {
-    setActivePage("dashboard");
-  };
-
-  /* ================= PAGE ROUTING ================= */
-
-  if (activePage === "attendance") {
-    return <Attendence onBack={goDashboard} />;
-  }
-
-  if (activePage === "timetable") {
-    return <TimeTable onBack={goDashboard} />;
-  }
-
-  if (activePage === "materials") {
-    return <StudyMaterials onBack={goDashboard} />;
-  }
-
-  if (activePage === "assignments") {
-    return <Assignments onBack={goDashboard} />;
-  }
-
-  if (activePage === "results") {
-    return <Results onBack={goDashboard} />;
-  }
-
-  if (activePage === "notices") {
-    return <Notices onBack={goDashboard} />;
-  }
-
-  if (activePage === "scholarships") {
-    return <Scholarships onBack={goDashboard} />;
-  }
-
-  if (activePage === "opportunities") {
-    return <Opportunities onBack={goDashboard} />;
-  }
-
-  if (activePage === "hostel") {
-    return <Hostel onBack={goDashboard} />;
-  }
-
-  if (activePage === "requests") {
-    return <Requests onBack={goDashboard} />;
-  }
-
-  if (activePage === "feedback") {
-    return <Feedback onBack={goDashboard} />;
-  }
-
-  if (activePage === "profile") {
-    return <StudentProfile onBack={goDashboard} />;
-  }
-
-  /* ================= DASHBOARD ================= */
 
   return (
-    <div className="student-dashboard">
+    <div className="student-dashboard-page">
 
       {/* ================= SIDEBAR ================= */}
 
-      <aside className="dashboard-sidebar">
+      <aside className="student-sidebar">
 
-        <div className="sidebar-logo">
-          <div className="sidebar-logo-box">
-            SH
-          </div>
+        <div className="sidebar-brand">
+
+          <img
+            src="/shec-logo.png"
+            alt="SHEC Logo"
+          />
 
           <div>
-            <h2>SHEC</h2>
+            <strong>SHEC</strong>
             <span>CampusHub</span>
           </div>
+
         </div>
 
-        {/* MINI PROFILE */}
 
-        <div
-          className="student-mini-profile"
-          onClick={() => openPage("profile")}
-          style={{ cursor: "pointer" }}
-        >
-          <div className="profile-circle">
-            {student.name.charAt(0)}
+        <div className="sidebar-profile">
+
+          <div className="sidebar-avatar">
+            {student.name?.charAt(0).toUpperCase() || "S"}
           </div>
 
           <div>
             <strong>{student.name}</strong>
             <span>{student.rollNumber}</span>
           </div>
+
         </div>
 
-        {/* SIDEBAR MENU */}
 
-        <nav className="sidebar-menu">
+        <nav className="sidebar-nav">
 
-          <button
-            className={activePage === "dashboard" ? "active" : ""}
-            onClick={goDashboard}
-          >
-            <span>🏠</span>
+          <a href="#dashboard" className={`sidebar-link ${activePage === "dashboard" ? "active" : ""}`} onClick={(e) => { e.preventDefault(); goTo("dashboard"); }}>
+            <span>⌂</span>
             Dashboard
-          </button>
+          </a>
 
-          <button onClick={() => openPage("attendance")}>
+          <a href="#attendence" className={`sidebar-link ${activePage === "attendence" ? "active" : ""}`} onClick={(e) => { e.preventDefault(); goTo("attendence"); }}>
             <span>📊</span>
             Attendence
-          </button>
+          </a>
 
-          <button onClick={() => openPage("timetable")}>
-            <span>🗓️</span>
+          <a href="#results" className={`sidebar-link ${activePage === "results" ? "active" : ""}`} onClick={(e) => { e.preventDefault(); goTo("results"); }}>
+            <span>🎓</span>
+            Results
+          </a>
+
+          <a href="#timetable" className={`sidebar-link ${activePage === "timetable" ? "active" : ""}`} onClick={(e) => { e.preventDefault(); goTo("timetable"); }}>
+            <span>📅</span>
             Time Table
-          </button>
+          </a>
 
-          <button onClick={() => openPage("materials")}>
-            <span>📚</span>
-            Study Materials
-          </button>
-
-          <button onClick={() => openPage("assignments")}>
+          <a href="#assignments" className={`sidebar-link ${activePage === "assignments" ? "active" : ""}`} onClick={(e) => { e.preventDefault(); goTo("assignments"); }}>
             <span>📝</span>
             Assignments
-          </button>
+          </a>
 
-          <button onClick={() => openPage("results")}>
-            <span>📈</span>
-            Results
-          </button>
+          <a href="#study-materials" className={`sidebar-link ${activePage === "study-materials" ? "active" : ""}`} onClick={(e) => { e.preventDefault(); goTo("study-materials"); }}>
+            <span>📚</span>
+            Study Materials
+          </a>
 
-          <button onClick={() => openPage("notices")}>
-            <span>📢</span>
+          <a href="#notices" className={`sidebar-link ${activePage === "notices" ? "active" : ""}`} onClick={(e) => { e.preventDefault(); goTo("notices"); }}>
+            <span>🔔</span>
             Notices
-          </button>
+          </a>
 
-          <button onClick={() => openPage("opportunities")}>
-            <span>🚀</span>
+          <a href="#opportunities" className={`sidebar-link ${activePage === "opportunities" ? "active" : ""}`} onClick={(e) => { e.preventDefault(); goTo("opportunities"); }}>
+            <span>💼</span>
             Opportunities
-          </button>
-
-          <button onClick={() => openPage("scholarships")}>
-            <span>🎓</span>
-            Scholarships
-          </button>
-
-          <button onClick={() => openPage("hostel")}>
-            <span>🏠</span>
-            Hostel
-          </button>
-
-          {/* LETTERS & CERTIFICATES */}
-
-          <button onClick={() => openPage("requests")}>
-            <span>📄</span>
-            Letters & Certificates
-          </button>
-
-          <button onClick={() => openPage("feedback")}>
-            <span>💬</span>
-            Feedback
-          </button>
+          </a>
 
         </nav>
 
-        {/* SIDEBAR BOTTOM */}
 
         <div className="sidebar-bottom">
 
-          <button onClick={() => openPage("profile")}>
-            👤 Profile
-          </button>
+          <div className="sidebar-help">
+
+            <span>?</span>
+
+            <div>
+              <strong>Need Help?</strong>
+              <small>Contact CampusHub</small>
+            </div>
+
+          </div>
+
 
           <button
-            onClick={() =>
-              alert("Settings section will be added next.")
-            }
+            className="sidebar-logout"
+            onClick={onLogout}
           >
-            ⚙️ Settings
-          </button>
-
-          <button onClick={onLogout}>
-            🚪 Logout
+            <span>↪</span>
+            Logout
           </button>
 
         </div>
 
       </aside>
 
-      {/* ================= MAIN ================= */}
 
-      <main className="dashboard-main">
+      {/* ================= MAIN AREA ================= */}
 
-        {/* HEADER */}
+      <div className="student-main">
 
-        <header className="dashboard-header">
+        {/* TOP BAR */}
+
+        <header className="student-topbar">
 
           <div>
+
+            <span className="topbar-label">
+              STUDENT PORTAL
+            </span>
+
             <h1>
-              Good Morning, {student.name} 👋
+              {activePage === "dashboard" ? "Dashboard" :
+               activePage === "attendence" ? "Attendence" :
+               activePage === "results" ? "Results" :
+               activePage === "timetable" ? "Time Table" :
+               activePage === "assignments" ? "Assignments" :
+               activePage === "study-materials" ? "Study Materials" :
+               activePage === "notices" ? "Notices" :
+               activePage === "opportunities" ? "Opportunities" : "Student Portal"}
             </h1>
 
-            <p>
-              Welcome back to your SHEC CampusHub
-            </p>
           </div>
 
-          {/* CLICKABLE HEADER PROFILE */}
 
-          <div
-            className="header-profile"
-            onClick={() => openPage("profile")}
-            style={{ cursor: "pointer" }}
-          >
+          <div className="topbar-right">
 
-            <div className="profile-circle">
-              {student.name.charAt(0)}
-            </div>
+            <button className="notification-btn">
+              🔔
+              <i></i>
+            </button>
 
-            <div>
-              <strong>{student.name}</strong>
-              <span>{student.branch}</span>
+
+            <div className="topbar-student">
+
+              <div className="topbar-avatar">
+                {student.name?.charAt(0).toUpperCase() || "S"}
+              </div>
+
+              <div>
+                <strong>{student.name}</strong>
+                <span>{student.branch}</span>
+              </div>
+
             </div>
 
           </div>
 
         </header>
 
-        {/* ================= STUDENT INFO ================= */}
 
-        <section className="student-info-card">
+        {/* ================= CONTENT ================= */}
 
-          <div>
-            <span>Roll Number</span>
-            <strong>{student.rollNumber}</strong>
-          </div>
+        {activePage === "dashboard" ? (
+          <main className="student-content">
 
-          <div>
-            <span>Branch</span>
-            <strong>{student.branch}</strong>
-          </div>
 
-          <div>
-            <span>Year</span>
-            <strong>{student.year}</strong>
-          </div>
 
-          <div>
-            <span>Semester</span>
-            <strong>{student.semester}</strong>
-          </div>
+          {/* ================= HERO ================= */}
 
-          <div>
-            <span>Section</span>
-            <strong>{student.section}</strong>
-          </div>
+          <section className="dashboard-hero">
 
-          <div>
-            <span>Academic Year</span>
-            <strong>{student.academicYear}</strong>
-          </div>
+            <div className="hero-text">
 
-        </section>
-
-        {/* ================= OVERVIEW ================= */}
-
-        <section className="overview-grid">
-
-          <div
-            className="overview-card clickable-card"
-            onClick={() => openPage("attendance")}
-          >
-            <div className="overview-icon">
-              📊
-            </div>
-
-            <div>
-              <span>Overall Attendence</span>
-              <strong>{student.attendance}%</strong>
-            </div>
-          </div>
-
-          <div
-            className="overview-card clickable-card"
-            onClick={() => openPage("assignments")}
-          >
-            <div className="overview-icon">
-              📝
-            </div>
-
-            <div>
-              <span>Assignments</span>
-              <strong>4</strong>
-            </div>
-          </div>
-
-          <div
-            className="overview-card clickable-card"
-            onClick={() => openPage("results")}
-          >
-            <div className="overview-icon">
-              📈
-            </div>
-
-            <div>
-              <span>Current CGPA</span>
-              <strong>8.82</strong>
-            </div>
-          </div>
-
-          <div
-            className="overview-card clickable-card"
-            onClick={() => openPage("notices")}
-          >
-            <div className="overview-icon">
-              📢
-            </div>
-
-            <div>
-              <span>New Notices</span>
-              <strong>5</strong>
-            </div>
-          </div>
-
-        </section>
-
-        {/* ================= MAIN CONTENT GRID ================= */}
-
-        <section className="dashboard-content-grid">
-
-          {/* TODAY'S CLASSES */}
-
-          <div className="dashboard-panel">
-
-            <div className="panel-header">
-
-              <div>
-                <h2>Today's Classes</h2>
-
-                <p>
-                  Your scheduled classes for today
-                </p>
-              </div>
-
-              <button
-                onClick={() => openPage("timetable")}
-              >
-                View Time Table →
-              </button>
-
-            </div>
-
-            <div className="class-list">
-
-              <div className="class-item">
-
-                <div className="class-time">
-                  09:20
-                </div>
-
-                <div>
-                  <strong>
-                    Advanced Data Structures
-                  </strong>
-
-                  <span>
-                    Classroom • Faculty
-                  </span>
-                </div>
-
-              </div>
-
-              <div className="class-item">
-
-                <div className="class-time">
-                  10:10
-                </div>
-
-                <div>
-                  <strong>
-                    Java Programming
-                  </strong>
-
-                  <span>
-                    Classroom • Faculty
-                  </span>
-                </div>
-
-              </div>
-
-              <div className="class-item">
-
-                <div className="class-time">
-                  11:10
-                </div>
-
-                <div>
-                  <strong>
-                    Database Management Systems
-                  </strong>
-
-                  <span>
-                    Classroom • Faculty
-                  </span>
-                </div>
-
-              </div>
-
-              <div className="class-item">
-
-                <div className="class-time">
-                  12:00
-                </div>
-
-                <div>
-                  <strong>
-                    Mathematics
-                  </strong>
-
-                  <span>
-                    Classroom • Faculty
-                  </span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* RECENT ASSIGNMENTS */}
-
-          <div className="dashboard-panel">
-
-            <div className="panel-header">
-
-              <div>
-                <h2>Recent Assignments</h2>
-
-                <p>
-                  Track your academic work
-                </p>
-              </div>
-
-              <button
-                onClick={() => openPage("assignments")}
-              >
-                View All →
-              </button>
-
-            </div>
-
-            <div className="mini-assignment">
-
-              <div>
-                <strong>
-                  Java OOP Concepts
-                </strong>
-
-                <span>
-                  Due: 05 Oct 2026
-                </span>
-              </div>
-
-              <span className="pending-badge">
-                Pending
+              <span className="hero-tag">
+                ✨ STUDENT DASHBOARD
               </span>
 
-            </div>
-
-            <div className="mini-assignment">
-
-              <div>
-                <strong>
-                  DBMS SQL Queries
-                </strong>
-
-                <span>
-                  Submitted
-                </span>
-              </div>
-
-              <span className="submitted-badge">
-                Submitted
-              </span>
-
-            </div>
-
-            <div className="mini-assignment">
-
-              <div>
-                <strong>
-                  ADS AVL Tree
-                </strong>
-
-                <span>
-                  Due: 07 Oct 2026
-                </span>
-              </div>
-
-              <span className="pending-badge">
-                Pending
-              </span>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* ================= QUICK SERVICES ================= */}
-
-        <section className="quick-services">
-
-          <div className="panel-header">
-
-            <div>
-              <h2>Quick Services</h2>
+              <h2>
+                Welcome back, {student.name?.split(" ")[0]}!
+              </h2>
 
               <p>
-                Access important campus services
+                Stay updated with your academics, attendence,
+                results and campus activities.
               </p>
+
+
+              <div className="hero-details">
+
+                <span>
+                  <b>Roll No:</b> {student.rollNumber}
+                </span>
+
+                <span>
+                  <b>Branch:</b> {student.branch}
+                </span>
+
+                <span>
+                  <b>Semester:</b> {student.semester}
+                </span>
+
+              </div>
+
             </div>
 
-          </div>
 
-          <div className="services-grid">
+            <div className="hero-visual">
 
-            <button
-              onClick={() => openPage("materials")}
-            >
-              <span>📚</span>
-              <strong>Study Materials</strong>
-              <small>Notes & PDFs</small>
-            </button>
+              <div className="hero-circle">
+                🎓
+              </div>
 
-            <button
-              onClick={() => openPage("opportunities")}
-            >
-              <span>🚀</span>
-              <strong>Opportunities</strong>
-              <small>Internships & Hackathons</small>
-            </button>
+            </div>
 
-            <button
-              onClick={() => openPage("scholarships")}
-            >
-              <span>🎓</span>
-              <strong>Scholarships</strong>
-              <small>Applications & Status</small>
-            </button>
+          </section>
 
-            <button
-              onClick={() => openPage("hostel")}
-            >
-              <span>🏠</span>
-              <strong>Hostel</strong>
-              <small>Hostel Information</small>
-            </button>
 
-            {/* LETTERS & CERTIFICATES */}
+          {/* ================= STAT CARDS ================= */}
 
-            <button
-              onClick={() => openPage("requests")}
-            >
-              <span>📄</span>
-              <strong>Letters & Certificates</strong>
-              <small>Apply & Track Requests</small>
-            </button>
+          <section className="dashboard-stat-grid">
 
-            <button
-              onClick={() => openPage("feedback")}
-            >
-              <span>💬</span>
-              <strong>Feedback</strong>
-              <small>Share Feedback</small>
-            </button>
 
-            <button
-              onClick={() => openPage("profile")}
-            >
-              <span>👤</span>
-              <strong>My Profile</strong>
-              <small>Personal Information</small>
-            </button>
+            <div className="dashboard-stat-card purple">
 
-          </div>
+              <div className="stat-icon">
+                📊
+              </div>
 
-        </section>
+              <div>
+
+                <span>Attendence</span>
+
+                <strong>
+                  {attendancePercentage}%
+                </strong>
+
+                <small>
+                  {attendanceGood
+                    ? "Above required 75%"
+                    : "Below required 75%"}
+                </small>
+
+              </div>
+
+            </div>
+
+
+            <div className="dashboard-stat-card blue">
+
+              <div className="stat-icon">
+                🎓
+              </div>
+
+              <div>
+
+                <span>Current CGPA</span>
+
+                <strong>
+                  {cgpa}
+                </strong>
+
+                <small>
+                  Academic performance
+                </small>
+
+              </div>
+
+            </div>
+
+
+            <div className="dashboard-stat-card green">
+
+              <div className="stat-icon">
+                📚
+              </div>
+
+              <div>
+
+                <span>Classes Attended</span>
+
+                <strong>
+                  {attendedClasses}
+                </strong>
+
+                <small>
+                  Classes completed
+                </small>
+
+              </div>
+
+            </div>
+
+
+            <div className="dashboard-stat-card orange">
+
+              <div className="stat-icon">
+                📝
+              </div>
+
+              <div>
+
+                <span>Total Classes</span>
+
+                <strong>
+                  {totalClasses}
+                </strong>
+
+                <small>
+                  Recorded classes
+                </small>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          {/* ================= TWO COLUMN ================= */}
+
+          <section className="dashboard-two-column">
+
+
+            {/* ATTENDANCE */}
+
+            <div className="modern-card attendance-card">
+
+              <div className="modern-card-header">
+
+                <div>
+
+                  <span>
+                    ACADEMIC OVERVIEW
+                  </span>
+
+                  <h2>
+                    Attendence
+                  </h2>
+
+                </div>
+
+
+                <span
+                  className={
+                    attendanceGood
+                      ? "status-badge good"
+                      : "status-badge warning"
+                  }
+                >
+                  {attendanceGood
+                    ? "Good Standing"
+                    : "Low Attendence"}
+                </span>
+
+              </div>
+
+
+              <div className="attendance-content">
+
+
+                <div className="attendance-progress">
+
+                  <div
+                    className="attendance-progress-ring"
+                    style={{
+                      "--progress":
+                        `${attendancePercentage}%`,
+                    }}
+                  >
+
+                    <div>
+
+                      <strong>
+                        {attendancePercentage}%
+                      </strong>
+
+                      <span>
+                        Attendence
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div className="attendance-info">
+
+
+                  <div className="attendance-item">
+
+                    <span className="dot present"></span>
+
+                    <div>
+
+                      <strong>
+                        {attendedClasses}
+                      </strong>
+
+                      <span>
+                        Classes Attended
+                      </span>
+
+                    </div>
+
+                  </div>
+
+
+                  <div className="attendance-item">
+
+                    <span className="dot total"></span>
+
+                    <div>
+
+                      <strong>
+                        {totalClasses}
+                      </strong>
+
+                      <span>
+                        Total Classes
+                      </span>
+
+                    </div>
+
+                  </div>
+
+
+                  <div className="attendance-note">
+
+                    <strong>
+                      {attendanceGood
+                        ? "✓ Attendance requirement satisfied"
+                        : "⚠ Attendance needs attention"}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            {/* PROFILE */}
+
+            <div className="modern-card profile-card">
+
+              <div className="modern-card-header">
+
+                <div>
+
+                  <span>
+                    MY PROFILE
+                  </span>
+
+                  <h2>
+                    Student Details
+                  </h2>
+
+                </div>
+
+
+                <div className="profile-small-icon">
+                  👤
+                </div>
+
+              </div>
+
+
+              <div className="profile-details">
+
+                <div>
+                  <span>Name</span>
+                  <strong>{student.name}</strong>
+                </div>
+
+                <div>
+                  <span>Roll Number</span>
+                  <strong>{student.rollNumber}</strong>
+                </div>
+
+                <div>
+                  <span>Branch</span>
+                  <strong>{student.branch}</strong>
+                </div>
+
+                <div>
+                  <span>Year</span>
+                  <strong>{student.year}</strong>
+                </div>
+
+                <div>
+                  <span>Semester</span>
+                  <strong>{student.semester}</strong>
+                </div>
+
+                <div>
+                  <span>Section</span>
+                  <strong>
+                    {student.section || "A"}
+                  </strong>
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          {/* ================= RESULTS + CLASSES ================= */}
+
+          <section className="dashboard-bottom-grid">
+
+
+            {/* RESULTS */}
+
+            <div className="modern-card">
+
+              <div className="modern-card-header">
+
+                <div>
+
+                  <span>
+                    ACADEMIC PERFORMANCE
+                  </span>
+
+                  <h2>
+                    Recent Results
+                  </h2>
+
+                </div>
+
+                <span className="card-arrow">
+                  →
+                </span>
+
+              </div>
+
+
+              {studentResults === undefined ? (
+
+                <div className="empty-state">
+                  Loading results...
+                </div>
+
+              ) : results.length === 0 ? (
+
+                <div className="empty-state">
+                  No results available.
+                </div>
+
+              ) : (
+
+                <div className="modern-result-list">
+
+                  {results
+                    .slice(0, 5)
+                    .map((result, index) => (
+
+                      <div
+                        className="modern-result-row"
+                        key={result._id || index}
+                      >
+
+                        <div className="subject-icon">
+                          {index + 1}
+                        </div>
+
+
+                        <div className="subject-info">
+
+                          <strong>
+                            {result.subject ||
+                              result.subjectName ||
+                              `Subject ${index + 1}`}
+                          </strong>
+
+                          <span>
+                            {result.semester ||
+                              student.semester}
+                          </span>
+
+                        </div>
+
+
+                        <strong className="result-value">
+
+                          {result.grade ||
+                            result.marks ||
+                            "--"}
+
+                        </strong>
+
+                      </div>
+
+                    ))}
+
+                </div>
+
+              )}
+
+            </div>
+
+
+            {/* TODAY CLASSES */}
+
+            <div className="modern-card">
+
+              <div className="modern-card-header">
+
+                <div>
+
+                  <span>
+                    ACADEMIC SCHEDULE
+                  </span>
+
+                  <h2>
+                    Today&apos;s Classes
+                  </h2>
+
+                </div>
+
+                <span className="card-arrow">
+                  →
+                </span>
+
+              </div>
+
+
+              <div className="modern-class-list">
+
+
+                <div className="modern-class-row">
+
+                  <div className="modern-class-time">
+                    <strong>09:20</strong>
+                    <span>AM</span>
+                  </div>
+
+                  <div className="class-line"></div>
+
+                  <div className="modern-class-info">
+
+                    <strong>
+                      Advanced Data Structures
+                    </strong>
+
+                    <span>
+                      CSE – AI &amp; DS
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <div className="modern-class-row">
+
+                  <div className="modern-class-time">
+                    <strong>10:10</strong>
+                    <span>AM</span>
+                  </div>
+
+                  <div className="class-line"></div>
+
+                  <div className="modern-class-info">
+
+                    <strong>
+                      Java Programming
+                    </strong>
+
+                    <span>
+                      CSE – AI &amp; DS
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <div className="modern-class-row">
+
+                  <div className="modern-class-time">
+                    <strong>11:10</strong>
+                    <span>AM</span>
+                  </div>
+
+                  <div className="class-line"></div>
+
+                  <div className="modern-class-info">
+
+                    <strong>
+                      Database Management Systems
+                    </strong>
+
+                    <span>
+                      CSE – AI &amp; DS
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <div className="modern-class-row">
+
+                  <div className="modern-class-time">
+                    <strong>12:00</strong>
+                    <span>PM</span>
+                  </div>
+
+                  <div className="class-line"></div>
+
+                  <div className="modern-class-info">
+
+                    <strong>
+                      Mathematics
+                    </strong>
+
+                    <span>
+                      CSE – AI &amp; DS
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          {/* ================= ASSIGNMENTS + NOTICES ================= */}
+
+          <section className="dashboard-bottom-grid">
+
+
+            {/* ASSIGNMENTS */}
+
+            <div className="modern-card">
+
+              <div className="modern-card-header">
+
+                <div>
+
+                  <span>
+                    ACADEMICS
+                  </span>
+
+                  <h2>
+                    Assignments
+                  </h2>
+
+                </div>
+
+                <span className="card-arrow">
+                  →
+                </span>
+
+              </div>
+
+
+              <div className="task-list">
+
+
+                <div className="task-row">
+
+                  <div className="task-icon purple-task">
+                    J
+                  </div>
+
+                  <div className="task-info">
+
+                    <strong>
+                      Java Programming
+                    </strong>
+
+                    <span>
+                      Object Oriented Programming
+                    </span>
+
+                  </div>
+
+                  <small>
+                    03 Oct
+                  </small>
+
+                </div>
+
+
+                <div className="task-row">
+
+                  <div className="task-icon blue-task">
+                    D
+                  </div>
+
+                  <div className="task-info">
+
+                    <strong>
+                      DBMS
+                    </strong>
+
+                    <span>
+                      SQL Queries Practice
+                    </span>
+
+                  </div>
+
+                  <small>
+                    05 Oct
+                  </small>
+
+                </div>
+
+
+                <div className="task-row">
+
+                  <div className="task-icon green-task">
+                    A
+                  </div>
+
+                  <div className="task-info">
+
+                    <strong>
+                      ADS
+                    </strong>
+
+                    <span>
+                      AVL Tree Implementation
+                    </span>
+
+                  </div>
+
+                  <small>
+                    07 Oct
+                  </small>
+
+                </div>
+
+
+              </div>
+
+            </div>
+
+
+            {/* NOTICES */}
+
+            <div className="modern-card">
+
+              <div className="modern-card-header">
+
+                <div>
+
+                  <span>
+                    CAMPUSHUB
+                  </span>
+
+                  <h2>
+                    Important Notices
+                  </h2>
+
+                </div>
+
+                <span className="card-arrow">
+                  →
+                </span>
+
+              </div>
+
+
+              <div className="notice-list">
+
+
+                <div className="notice-row">
+
+                  <div className="notice-icon">
+                    📢
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      Mid Examination Schedule
+                    </strong>
+
+                    <span>
+                      Examination related notice
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <div className="notice-row">
+
+                  <div className="notice-icon">
+                    📊
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      Attendence Review Notice
+                    </strong>
+
+                    <span>
+                      Check your current attendence
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <div className="notice-row">
+
+                  <div className="notice-icon">
+                    🎓
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      Scholarship Renewal – 2026–27
+                    </strong>
+
+                    <span>
+                      Scholarship related information
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+              </div>
+
+            </div>
+
+          </section>
+
+        
+          </main>
+        ) : (
+          <main className="student-content">
+            {renderPage()}
+          </main>
+        )}
 
         {/* ================= FOOTER ================= */}
 
-        <footer className="dashboard-footer">
-
-          <p>
-            © 2026 Sri Harshini College of Engineering and Technology for Women
-          </p>
+        <footer className="student-dashboard-footer">
 
           <span>
-            SHEC CampusHub • Student Portal
+            © 2026 SHEC CampusHub
+          </span>
+
+          <span>
+            Student Portal • Sri Harshini College
           </span>
 
         </footer>
 
-      </main>
+      </div>
 
     </div>
   );

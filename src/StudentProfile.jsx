@@ -1,23 +1,43 @@
+```jsx
 import React, { useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./StudentProfile.css";
 
 function StudentProfile({ onBack }) {
   const [editing, setEditing] = useState(false);
 
-  const [student, setStudent] = useState({
-    name: "Yashii",
-    rollNumber: "DEMO2026AI001",
-    branch: "CSE – AI & DS",
-    year: "2nd Year",
-    semester: "2-1",
-    section: "A",
-    academicYear: "2026–27",
-    email: "student@shec.ac.in",
-    phone: "XXXXXXXXXX",
-    admissionYear: "2025",
-    bloodGroup: "Not Updated",
-    address: "Not Updated",
-  });
+  const studentData = useQuery(
+    api.students.getStudentByRollNumber,
+    {
+      rollNumber: "DEMO2026AI001",
+    }
+  );
+
+  const updateStudent = useMutation(
+    api.students.updateStudent
+  );
+
+  const [student, setStudent] = useState(null);
+
+  React.useEffect(() => {
+    if (studentData) {
+      setStudent({
+        name: studentData.name || "",
+        rollNumber: studentData.rollNumber || "",
+        branch: studentData.branch || "",
+        year: studentData.year || "",
+        semester: studentData.semester || "",
+        section: studentData.section || "",
+        academicYear: studentData.academicYear || "",
+        email: studentData.email || "",
+        phone: studentData.phone || "XXXXXXXXXX",
+        admissionYear: "2025",
+        bloodGroup: "Not Updated",
+        address: "Not Updated",
+      });
+    }
+  }, [studentData]);
 
   const handleChange = (field, value) => {
     setStudent({
@@ -25,6 +45,56 @@ function StudentProfile({ onBack }) {
       [field]: value,
     });
   };
+
+  const handleSave = async () => {
+    if (!studentData || !student) {
+      return;
+    }
+
+    try {
+      await updateStudent({
+        studentId: studentData._id,
+        name: student.name,
+        email: student.email,
+        phone: student.phone,
+      });
+
+      setEditing(false);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Profile update error:", error);
+      alert("Unable to update profile. Please try again.");
+    }
+  };
+
+  if (!student) {
+    return (
+      <div className="student-profile-page">
+        <header className="profile-page-header">
+          <button
+            className="profile-back-btn"
+            onClick={onBack}
+          >
+            ← Back to Dashboard
+          </button>
+
+          <div>
+            <h1>Student Profile</h1>
+            <p>View and manage your student information</p>
+          </div>
+        </header>
+
+        <main className="profile-container">
+          <section className="profile-section">
+            <div className="profile-section-heading">
+              <h2>Loading Profile...</h2>
+              <p>Please wait while your student information is loaded.</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="student-profile-page">
@@ -69,13 +139,18 @@ function StudentProfile({ onBack }) {
 
           <button
             className="edit-profile-btn"
-            onClick={() => setEditing(!editing)}
+            onClick={() => {
+              if (editing) {
+                handleSave();
+              } else {
+                setEditing(true);
+              }
+            }}
           >
             {editing ? "Save Profile" : "Edit Profile"}
           </button>
 
         </section>
-
 
         {/* ACADEMIC INFORMATION */}
 
@@ -148,7 +223,6 @@ function StudentProfile({ onBack }) {
 
         </section>
 
-
         {/* PERSONAL INFORMATION */}
 
         <section className="profile-section">
@@ -172,7 +246,6 @@ function StudentProfile({ onBack }) {
               />
             </div>
 
-
             <div className="profile-field">
               <label>Email</label>
 
@@ -184,7 +257,6 @@ function StudentProfile({ onBack }) {
                 }
               />
             </div>
-
 
             <div className="profile-field">
               <label>Phone Number</label>
@@ -198,7 +270,6 @@ function StudentProfile({ onBack }) {
               />
             </div>
 
-
             <div className="profile-field">
               <label>Blood Group</label>
 
@@ -210,7 +281,6 @@ function StudentProfile({ onBack }) {
                 }
               />
             </div>
-
 
             <div className="profile-field full-width">
               <label>Address</label>
@@ -228,7 +298,6 @@ function StudentProfile({ onBack }) {
           </div>
 
         </section>
-
 
         {/* ACCOUNT INFORMATION */}
 
@@ -267,3 +336,4 @@ function StudentProfile({ onBack }) {
 }
 
 export default StudentProfile;
+```

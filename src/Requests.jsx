@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./Requests.css";
 
 function Requests({ onBack }) {
@@ -10,24 +12,16 @@ function Requests({ onBack }) {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      type: "Bonafide Certificate",
-      subject: "Bonafide Certificate",
-      date: "28 Sep 2026",
-      status: "Approved",
-      category: "Letter",
-    },
-    {
-      id: 2,
-      type: "Leave Request",
-      subject: "Personal Leave",
-      date: "25 Sep 2026",
-      status: "Pending",
-      category: "Request",
-    },
-  ]);
+  const student = useQuery(api.students.getStudentByRollNumber, {
+    rollNumber: "DEMO2026AI001",
+  });
+
+  const requestsData = useQuery(
+    api.requests.getStudentRequests,
+    student ? { studentId: student._id } : "skip"
+  );
+
+  const addRequest = useMutation(api.requests.addRequest);
 
   const letterTypes = [
     {
@@ -43,12 +37,14 @@ function Requests({ onBack }) {
     {
       icon: "🏦",
       title: "Fee / Bank Letter",
-      description: "Request an official letter for bank or fee-related purposes.",
+      description:
+        "Request an official letter for bank or fee-related purposes.",
     },
     {
       icon: "📝",
       title: "Permission Letter",
-      description: "Submit a permission request for academic or personal needs.",
+      description:
+        "Submit a permission request for academic or personal needs.",
     },
     {
       icon: "🏠",
@@ -58,51 +54,71 @@ function Requests({ onBack }) {
     {
       icon: "📑",
       title: "Transfer Certificate",
-      description: "Submit a request related to transfer certificate processing.",
+      description:
+        "Submit a request related to transfer certificate processing.",
     },
     {
       icon: "📋",
       title: "General Letter",
-      description: "Submit any other official college letter request.",
+      description:
+        "Submit any other official college letter request.",
     },
   ];
 
   const handleLetterSelect = (type) => {
-    setRequestType(type);
+    let backendType = type;
+
+    if (type === "Leave Letter") {
+      backendType = "Leave Request";
+    }
+
+    if (type === "Permission Letter") {
+      backendType = "Permission Request";
+    }
+
+    if (type === "General Letter") {
+      backendType = "General Request";
+    }
+
+    setRequestType(backendType);
     setSubject(type);
     setActiveTab("form");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!student) {
+      alert("Student profile is still loading.");
+      return;
+    }
 
     if (!subject || !reason) {
       alert("Please fill all required fields.");
       return;
     }
 
-    const newRequest = {
-      id: Date.now(),
-      type: requestType,
-      subject,
-      date: new Date().toLocaleDateString("en-IN"),
-      status: "Pending",
-      category:
-        requestType.includes("Certificate") ||
-        requestType.includes("Letter")
-          ? "Letter"
-          : "Request",
-    };
+    try {
+      await addRequest({
+        studentId: student._id,
+        requestType,
+        subject,
+        description: reason,
+        priority: "Medium",
+      });
 
-    setRequests([newRequest, ...requests]);
+      setSubject("");
+      setReason("");
+      setFromDate("");
+      setToDate("");
 
-    setSubject("");
-    setReason("");
-    setFromDate("");
-    setToDate("");
+      alert("Your request has been submitted successfully!");
 
-    alert("Your request has been submitted successfully!");
-    setActiveTab("history");
+      setActiveTab("history");
+    } catch (error) {
+      console.error(error);
+      alert("Unable to submit request. Please try again.");
+    }
   };
 
   const handlePrint = (request) => {
@@ -117,7 +133,7 @@ function Requests({ onBack }) {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>${request.type}</title>
+        <title>${request.requestType}</title>
         <style>
           body {
             font-family: Arial, sans-serif;
@@ -189,7 +205,7 @@ function Requests({ onBack }) {
             <p>Ongole, Andhra Pradesh</p>
           </div>
 
-          <h2>${request.type}</h2>
+          <h2>${request.requestType}</h2>
 
           <div class="details">
             <p><strong>Student Name:</strong> Yashii</p>
@@ -225,6 +241,20 @@ function Requests({ onBack }) {
 
     printWindow.document.close();
   };
+
+  const requests = (requestsData || []).map((request) => ({
+    ...request,
+    date: new Date(request.createdAt).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }),
+    category:
+      request.requestType.includes("Certificate") ||
+      request.requestType.includes("Letter")
+        ? "Letter"
+        : "Request",
+  }));
 
   return (
     <div className="requests-page">
@@ -392,15 +422,33 @@ function Requests({ onBack }) {
                   }}
                 >
 
-                  <option>Bonafide Certificate</option>
-                  <option>Study Certificate</option>
-                  <option>Fee / Bank Letter</option>
-                  <option>Permission Letter</option>
-                  <option>Leave Letter</option>
-                  <option>Transfer Certificate</option>
-                  <option>General Letter</option>
-                  <option>Leave Request</option>
-                  <option>Permission Request</option>
+                  <option value="Bonafide Certificate">
+                    Bonafide Certificate
+                  </option>
+
+                  <option value="Study Certificate">
+                    Study Certificate
+                  </option>
+
+                  <option value="Fee / Bank Letter">
+                    Fee / Bank Letter
+                  </option>
+
+                  <option value="Permission Request">
+                    Permission Request
+                  </option>
+
+                  <option value="Leave Request">
+                    Leave Request
+                  </option>
+
+                  <option value="Transfer Certificate">
+                    Transfer Certificate
+                  </option>
+
+                  <option value="General Request">
+                    General Request
+                  </option>
 
                 </select>
 
@@ -420,9 +468,7 @@ function Requests({ onBack }) {
               </div>
 
               {(requestType === "Leave Request" ||
-                requestType === "Leave Letter" ||
-                requestType === "Permission Request" ||
-                requestType === "Permission Letter") && (
+                requestType === "Permission Request") && (
 
                 <div className="date-row">
 
@@ -510,53 +556,66 @@ function Requests({ onBack }) {
 
             <div className="request-list">
 
-              {requests.map((request) => (
+              {requests.length === 0 ? (
 
-                <div
-                  className="request-item"
-                  key={request.id}
-                >
-
-                  <div className="request-icon">
-                    {request.category === "Letter" ? "📄" : "📝"}
-                  </div>
-
-                  <div className="request-info">
-
-                    <strong>
-                      {request.subject}
-                    </strong>
-
-                    <span>
-                      {request.type}
-                    </span>
-
-                    <small>
-                      Submitted: {request.date}
-                    </small>
-
-                  </div>
-
-                  <span
-                    className={`request-status ${request.status
-                      .toLowerCase()
-                      .replace(" ", "-")}`}
-                  >
-                    {request.status}
-                  </span>
-
-                  {request.status === "Approved" && (
-                    <button
-                      className="view-letter-btn"
-                      onClick={() => handlePrint(request)}
-                    >
-                      🖨️ View / Print
-                    </button>
-                  )}
-
+                <div className="request-info-card">
+                  <h2>No Requests Yet</h2>
+                  <p>
+                    Your submitted requests will appear here.
+                  </p>
                 </div>
 
-              ))}
+              ) : (
+
+                requests.map((request) => (
+
+                  <div
+                    className="request-item"
+                    key={request._id}
+                  >
+
+                    <div className="request-icon">
+                      {request.category === "Letter" ? "📄" : "📝"}
+                    </div>
+
+                    <div className="request-info">
+
+                      <strong>
+                        {request.subject}
+                      </strong>
+
+                      <span>
+                        {request.requestType}
+                      </span>
+
+                      <small>
+                        Submitted: {request.date}
+                      </small>
+
+                    </div>
+
+                    <span
+                      className={`request-status ${request.status
+                        .toLowerCase()
+                        .replace(" ", "-")}`}
+                    >
+                      {request.status}
+                    </span>
+
+                    {request.status === "Approved" && (
+                      <button
+                        className="view-letter-btn"
+                        onClick={() => handlePrint(request)}
+                      >
+                        🖨️ View / Print
+                      </button>
+                    )}
+
+                  </div>
+
+                ))
+
+              )}
 
             </div>
 

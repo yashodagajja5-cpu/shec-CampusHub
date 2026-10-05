@@ -1,51 +1,118 @@
 import React from "react";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./Attendence.css";
 
 function Attendence({ onBack }) {
-  const subjects = [
+
+  // Get logged-in/demo student from Convex
+  const student = useQuery(
+    api.students.getStudentByRollNumber,
     {
-      name: "Advanced Data Structures",
-      code: "ADS",
-      attended: 18,
-      total: 20,
-      percentage: 90,
-    },
-    {
-      name: "Java Programming",
-      code: "JAVA",
-      attended: 22,
-      total: 24,
-      percentage: 92,
-    },
-    {
-      name: "Database Management Systems",
-      code: "DBMS",
-      attended: 19,
-      total: 23,
-      percentage: 83,
-    },
-    {
-      name: "Mathematics",
-      code: "MATHS",
-      attended: 16,
-      total: 20,
-      percentage: 80,
-    },
-    {
-      name: "Computer Networks",
-      code: "CN",
-      attended: 17,
-      total: 21,
-      percentage: 81,
-    },
-    {
-      name: "English",
-      code: "ENG",
-      attended: 19,
-      total: 20,
-      percentage: 95,
-    },
-  ];
+      rollNumber: "DEMO2026AI001",
+    }
+  );
+
+  // Get attendance records from Convex
+  const attendanceRecords = useQuery(
+    api.attendance.getStudentAttendance,
+    student
+      ? {
+          studentId: student._id,
+        }
+      : "skip"
+  );
+
+  // Loading state
+  if (student === undefined || attendanceRecords === undefined) {
+    return (
+      <div className="attendence-page">
+        <div
+          style={{
+            padding: "60px",
+            textAlign: "center",
+          }}
+        >
+          <h2>Loading Attendence...</h2>
+          <p>Fetching your academic records.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Student not found
+  if (student === null) {
+    return (
+      <div className="attendence-page">
+        <div
+          style={{
+            padding: "60px",
+            textAlign: "center",
+          }}
+        >
+          <h2>Student Not Found</h2>
+          <p>Unable to load student details.</p>
+
+          <button
+            className="attendence-back"
+            onClick={onBack}
+          >
+            ← Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Create subject-wise attendance
+  const subjectMap = {};
+
+  attendanceRecords.forEach((record) => {
+    const code = record.subjectCode;
+
+    if (!subjectMap[code]) {
+      subjectMap[code] = {
+        name: record.subjectName,
+        code: record.subjectCode,
+        attended: 0,
+        total: 0,
+      };
+    }
+
+    subjectMap[code].total += 1;
+
+    if (record.status === "present") {
+      subjectMap[code].attended += 1;
+    }
+  });
+
+  const subjects = Object.values(subjectMap).map((subject) => ({
+    ...subject,
+    percentage:
+      subject.total > 0
+        ? Math.round(
+            (subject.attended / subject.total) * 100
+          )
+        : 0,
+  }));
+
+  // Overall attendance
+  const totalClasses = attendanceRecords.length;
+
+  const classesAttended = attendanceRecords.filter(
+    (record) => record.status === "present"
+  ).length;
+
+  const classesAbsent = attendanceRecords.filter(
+    (record) => record.status === "absent"
+  ).length;
+
+  const overallPercentage =
+    totalClasses > 0
+      ? Math.round(
+          (classesAttended / totalClasses) * 100
+        )
+      : 0;
 
   return (
     <div className="attendence-page">
@@ -55,7 +122,11 @@ function Attendence({ onBack }) {
       <header className="attendence-header">
 
         <div>
-          <button className="attendence-back" onClick={onBack}>
+
+          <button
+            className="attendence-back"
+            onClick={onBack}
+          >
             ← Back to Dashboard
           </button>
 
@@ -64,16 +135,24 @@ function Attendence({ onBack }) {
           <h1>Attendence</h1>
 
           <span>
-            2-1 • CSE – AI & DS • Academic Year 2026–27
+            {student.semester} • {student.branch} • Academic Year{" "}
+            {student.academicYear}
           </span>
+
         </div>
 
         <div className="attendence-overall">
+
           <span>Overall Attendence</span>
-          <strong>86%</strong>
+
+          <strong>
+            {overallPercentage}%
+          </strong>
+
         </div>
 
       </header>
+
 
       {/* SUMMARY */}
 
@@ -81,96 +160,164 @@ function Attendence({ onBack }) {
 
         <div className="attendence-summary-card">
           <span>Total Classes</span>
-          <strong>128</strong>
+
+          <strong>
+            {totalClasses}
+          </strong>
         </div>
+
 
         <div className="attendence-summary-card">
           <span>Classes Attended</span>
-          <strong>111</strong>
+
+          <strong>
+            {classesAttended}
+          </strong>
         </div>
+
 
         <div className="attendence-summary-card">
           <span>Classes Absent</span>
-          <strong>17</strong>
+
+          <strong>
+            {classesAbsent}
+          </strong>
         </div>
+
 
         <div className="attendence-summary-card">
           <span>Overall Percentage</span>
-          <strong>86%</strong>
+
+          <strong>
+            {overallPercentage}%
+          </strong>
         </div>
 
       </section>
 
+
       {/* NOTICE */}
 
       <div className="attendence-notice">
-        <strong>Attendence Status</strong>
+
+        <strong>
+          Attendence Status
+        </strong>
+
         <span>
-          Your overall attendance is currently above the required threshold.
-          Keep attending classes regularly.
+          {overallPercentage >= 75
+            ? "Your overall attendance is currently above the required threshold. Keep attending classes regularly."
+            : "Your overall attendance is currently below the displayed threshold. Please attend classes regularly."}
         </span>
+
       </div>
+
 
       {/* SUBJECT TABLE */}
 
       <section className="attendence-table-card">
 
         <div className="attendence-title">
+
           <div>
-            <p>SUBJECT-WISE DETAILS</p>
-            <h2>Attendence Records</h2>
+
+            <p>
+              SUBJECT-WISE DETAILS
+            </p>
+
+            <h2>
+              Attendence Records
+            </h2>
+
           </div>
 
-          <button>Download Report</button>
+          <button>
+            Download Report
+          </button>
+
         </div>
+
 
         <div className="attendence-table-wrapper">
 
           <table>
 
             <thead>
+
               <tr>
+
                 <th>Subject</th>
+
                 <th>Code</th>
+
                 <th>Attended</th>
+
                 <th>Total Classes</th>
+
                 <th>Absent</th>
+
                 <th>Percentage</th>
+
                 <th>Status</th>
+
               </tr>
+
             </thead>
+
 
             <tbody>
 
               {subjects.map((subject) => {
 
                 const absent =
-                  subject.total - subject.attended;
+                  subject.total -
+                  subject.attended;
 
                 return (
-                  <tr key={subject.code}>
+
+                  <tr
+                    key={subject.code}
+                  >
 
                     <td>
-                      <strong>{subject.name}</strong>
+                      <strong>
+                        {subject.name}
+                      </strong>
                     </td>
 
-                    <td>{subject.code}</td>
-
-                    <td>{subject.attended}</td>
-
-                    <td>{subject.total}</td>
-
-                    <td>{absent}</td>
 
                     <td>
+                      {subject.code}
+                    </td>
+
+
+                    <td>
+                      {subject.attended}
+                    </td>
+
+
+                    <td>
+                      {subject.total}
+                    </td>
+
+
+                    <td>
+                      {absent}
+                    </td>
+
+
+                    <td>
+
                       <div className="percentage-cell">
 
                         <div className="progress-bar">
+
                           <div
                             style={{
                               width: `${subject.percentage}%`,
                             }}
                           ></div>
+
                         </div>
 
                         <strong>
@@ -178,21 +325,30 @@ function Attendence({ onBack }) {
                         </strong>
 
                       </div>
+
                     </td>
 
+
                     <td>
+
                       {subject.percentage >= 75 ? (
+
                         <span className="attendence-good">
                           Good
                         </span>
+
                       ) : (
+
                         <span className="attendence-low">
                           Low
                         </span>
+
                       )}
+
                     </td>
 
                   </tr>
+
                 );
 
               })}
@@ -205,27 +361,37 @@ function Attendence({ onBack }) {
 
       </section>
 
+
       {/* FOOTER INFO */}
 
       <section className="attendence-info">
 
         <div>
-          <h3>Attendence Policy</h3>
+
+          <h3>
+            Attendence Policy
+          </h3>
 
           <p>
             Attendence requirements and condonation rules should follow
             the currently applicable college and JNTUK regulations.
           </p>
+
         </div>
 
+
         <div>
-          <h3>Need Correction?</h3>
+
+          <h3>
+            Need Correction?
+          </h3>
 
           <p>
             If you find an attendence entry that appears incorrect,
             contact the concerned faculty member or submit a request
             through CampusHub.
           </p>
+
         </div>
 
       </section>

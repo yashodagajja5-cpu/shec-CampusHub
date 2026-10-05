@@ -1,7 +1,21 @@
+```jsx
 import React from "react";
 import "./Hostel.css";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 function Hostel({ onBack }) {
+  const student = useQuery(api.students.getStudentByRollNumber, {
+    rollNumber: "DEMO2026AI001",
+  });
+
+  const hostelResident = useQuery(
+    api.hostel.getStudentHostelInfo,
+    student ? { studentId: student._id } : "skip"
+  );
+
+  const accommodationStatus = hostelResident ? "Allocated" : "Available";
+
   return (
     <div className="hostel-page">
 
@@ -22,7 +36,7 @@ function Hostel({ onBack }) {
 
         <div className="hostel-summary-card">
           <span>Accommodation</span>
-          <strong>Available</strong>
+          <strong>{accommodationStatus}</strong>
         </div>
 
         <div className="hostel-summary-card">
@@ -135,3 +149,4 @@ function Hostel({ onBack }) {
 }
 
 export default Hostel;
+```

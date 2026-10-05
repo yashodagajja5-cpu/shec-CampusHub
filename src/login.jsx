@@ -1,18 +1,53 @@
 import React, { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 function Login({ onBack, onLogin }) {
   const [rollNumber, setRollNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [loginAttempt, setLoginAttempt] = useState(null);
+
+  const student = useQuery(
+    api.students.loginStudent,
+    loginAttempt
+      ? {
+          rollNumber: loginAttempt.rollNumber,
+          password: loginAttempt.password,
+        }
+      : "skip"
+  );
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (rollNumber && password) {
-      onLogin();
-    } else {
+    if (!rollNumber.trim() || !password) {
       alert("Please enter Roll Number and Password");
+      return;
     }
+
+    setLoginAttempt({
+      rollNumber: rollNumber.trim(),
+      password,
+    });
   };
+
+  React.useEffect(() => {
+    if (!loginAttempt) return;
+
+    if (student === undefined) {
+      return;
+    }
+
+    if (!student) {
+      alert("Invalid Roll Number or Password");
+      setLoginAttempt(null);
+      return;
+    }
+
+    setLoginAttempt(null);
+
+    onLogin(student);
+  }, [student, loginAttempt, onLogin]);
 
   return (
     <div className="login-page">
@@ -54,7 +89,9 @@ function Login({ onBack, onLogin }) {
         <div className="login-note">
           <strong>Demo Login</strong>
           <br />
-          Use any Roll Number and Password for now.
+          Roll Number: DEMO2026AI001
+          <br />
+          Password: 123456
         </div>
 
       </div>

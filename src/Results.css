@@ -708,3 +708,37 @@
     grid-template-columns: 1fr;
   }
 }
+/* ================================
+   SEMESTER SELECTOR
+================================ */
+
+.semester-selector {
+  max-width: 1400px;
+  margin: 0 auto 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.semester-selector button {
+  border: 1px solid #e2d9f3;
+  background: #ffffff;
+  color: #6841c6;
+  padding: 10px 18px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.semester-selector button:hover {
+  background: #f5f0ff;
+  border-color: #b9a2e8;
+}
+
+.semester-selector button.active {
+  background: #6841c6;
+  color: #ffffff;
+  border-color: #6841c6;
+  box-shadow: 0 4px 12px rgba(104, 65, 198, 0.18);
+}

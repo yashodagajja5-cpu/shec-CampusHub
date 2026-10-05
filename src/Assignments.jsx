@@ -1,49 +1,91 @@
 import React, { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./Assignments.css";
 
 function Assignments({ onBack }) {
   const [filter, setFilter] = useState("All");
 
-  const assignments = [
+  const assignmentsData = useQuery(
+    api.assignments.getStudentAssignments,
     {
-      subject: "Java Programming",
-      title: "Object Oriented Programming",
-      description: "Prepare notes and programs based on OOP concepts.",
-      assignedDate: "Sep 28, 2026",
-      dueDate: "Oct 3, 2026",
+      branch: "CSE – AI & DS",
+      semester: "2-1",
+    }
+  );
+
+  // Loading state
+  if (assignmentsData === undefined) {
+    return (
+      <div className="assignments-page">
+
+        <header className="assignments-header">
+          <div>
+            <button
+              className="assignments-back"
+              onClick={onBack}
+            >
+              ← Back to Dashboard
+            </button>
+
+            <p>LEARNING</p>
+
+            <h1>Assignments</h1>
+
+            <span>
+              2-1 • CSE – AI & DS • Section A • 2026–27
+            </span>
+          </div>
+
+          <div className="assignment-summary">
+            <strong>—</strong>
+            <span>Total Assignments</span>
+          </div>
+        </header>
+
+        <section className="assignment-note">
+          <strong>📚 Loading Assignments</strong>
+
+          <span>
+            Assignments are being loaded from the CampusHub database.
+          </span>
+        </section>
+
+      </div>
+    );
+  }
+
+  const assignments = assignmentsData || [];
+
+  /*
+    Current assignments table does not have a status field.
+    Therefore, all database assignments are shown as Pending
+    until student submission tracking is added.
+  */
+  const formattedAssignments = assignments.map(
+    (assignment) => ({
+      ...assignment,
+
+      subject: assignment.subjectName,
+
       status: "Pending",
-    },
-    {
-      subject: "Database Management Systems",
-      title: "SQL Queries Practice",
-      description: "Write SQL queries for the given database problems.",
-      assignedDate: "Sep 26, 2026",
-      dueDate: "Oct 5, 2026",
-      status: "Submitted",
-    },
-    {
-      subject: "Advanced Data Structures",
-      title: "AVL Tree Implementation",
-      description: "Implement insertion and deletion operations in AVL trees.",
-      assignedDate: "Sep 25, 2026",
-      dueDate: "Oct 7, 2026",
-      status: "Pending",
-    },
-    {
-      subject: "Mathematics",
-      title: "Unit 1 Problem Set",
-      description: "Solve the important problems from Unit 1.",
-      assignedDate: "Sep 23, 2026",
-      dueDate: "Oct 2, 2026",
-      status: "Completed",
-    },
-  ];
+
+      assignedDate: new Date(
+        assignment.createdAt
+      ).toLocaleDateString("en-IN", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    })
+  );
 
   const filteredAssignments =
     filter === "All"
-      ? assignments
-      : assignments.filter(
-          (assignment) => assignment.status === filter
+      ? formattedAssignments
+      : formattedAssignments.filter(
+          (assignment) =>
+            assignment.status === filter
         );
 
   return (
@@ -123,77 +165,101 @@ function Assignments({ onBack }) {
       {/* ASSIGNMENTS */}
       <section className="assignments-list">
 
-        {filteredAssignments.map((assignment, index) => (
+        {filteredAssignments.length === 0 ? (
 
-          <div
-            className="assignment-card"
-            key={index}
-          >
+          <div className="assignment-note">
+            <strong>📚 No Assignments Found</strong>
 
-            <div className="assignment-card-top">
-
-              <div>
-
-                <span className="assignment-subject">
-                  {assignment.subject}
-                </span>
-
-                <h2>
-                  {assignment.title}
-                </h2>
-
-              </div>
-
-              <span
-                className={`assignment-status ${assignment.status.toLowerCase()}`}
-              >
-                {assignment.status}
-              </span>
-
-            </div>
-
-
-            <p className="assignment-description">
-              {assignment.description}
-            </p>
-
-
-            <div className="assignment-details">
-
-              <div>
-                <span>Assigned Date</span>
-                <strong>
-                  {assignment.assignedDate}
-                </strong>
-              </div>
-
-              <div>
-                <span>Due Date</span>
-                <strong>
-                  {assignment.dueDate}
-                </strong>
-              </div>
-
-            </div>
-
-
-            <div className="assignment-actions">
-
-              <button className="view-assignment">
-                View Assignment →
-              </button>
-
-              {assignment.status === "Pending" && (
-                <button className="submit-assignment">
-                  Submit Assignment
-                </button>
-              )}
-
-            </div>
-
+            <span>
+              There are no assignments available for
+              the selected status.
+            </span>
           </div>
 
-        ))}
+        ) : (
+
+          filteredAssignments.map((assignment) => (
+
+            <div
+              className="assignment-card"
+              key={assignment._id}
+            >
+
+              <div className="assignment-card-top">
+
+                <div>
+
+                  <span className="assignment-subject">
+                    {assignment.subject}
+                  </span>
+
+                  <h2>
+                    {assignment.title}
+                  </h2>
+
+                </div>
+
+                <span
+                  className={`assignment-status ${assignment.status.toLowerCase()}`}
+                >
+                  {assignment.status}
+                </span>
+
+              </div>
+
+
+              <p className="assignment-description">
+                {assignment.description ||
+                  "No description provided."}
+              </p>
+
+
+              <div className="assignment-details">
+
+                <div>
+                  <span>Assigned Date</span>
+
+                  <strong>
+                    {assignment.assignedDate}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Due Date</span>
+
+                  <strong>
+                    {new Date(
+                      assignment.dueDate
+                    ).toLocaleDateString("en-IN", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </strong>
+                </div>
+
+              </div>
+
+
+              <div className="assignment-actions">
+
+                <button className="view-assignment">
+                  View Assignment →
+                </button>
+
+                {assignment.status === "Pending" && (
+                  <button className="submit-assignment">
+                    Submit Assignment
+                  </button>
+                )}
+
+              </div>
+
+            </div>
+
+          ))
+
+        )}
 
       </section>
 

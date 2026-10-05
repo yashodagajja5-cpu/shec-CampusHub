@@ -1,59 +1,12 @@
 import React, { useState } from "react";
 import "./Opportunities.css";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 function Opportunities({ onBack }) {
   const [filter, setFilter] = useState("All");
 
-  const opportunities = [
-    {
-      title: "Internship Opportunities",
-      type: "Internship",
-      organization: "Industry & Training Partners",
-      description:
-        "Explore internship opportunities suitable for students from different branches and semesters.",
-        status: "Open",
-    },
-    {
-      title: "Hackathons",
-      type: "Hackathon",
-      organization: "College / External Platforms",
-      description:
-        "Find upcoming hackathons, team-based competitions and innovation challenges.",
-      status: "Open",
-    },
-    {
-      title: "Workshops",
-      type: "Workshop",
-      organization: "SHEC Campus",
-      description:
-        "Participate in technical workshops, seminars and skill-development sessions.",
-      status: "Open",
-    },
-    {
-      title: "Placement Training",
-      type: "Placement",
-      organization: "SHEC Training Cell",
-      description:
-        "Access placement preparation activities including aptitude, coding and communication training.",
-      status: "Available",
-    },
-    {
-      title: "Coding Competitions",
-      type: "Competition",
-      organization: "Technical Community",
-      description:
-        "Participate in coding contests and technical competitions to improve problem-solving skills.",
-      status: "Open",
-    },
-    {
-      title: "Scholarship Opportunities",
-      type: "Scholarship",
-      organization: "Government / Private Organizations",
-      description:
-        "View scholarship opportunities and eligibility information available for students.",
-      status: "Open",
-    },
-  ];
+  const opportunities = useQuery(api.opportunities.getOpportunities);
 
   const filters = [
     "All",
@@ -67,8 +20,8 @@ function Opportunities({ onBack }) {
 
   const filteredOpportunities =
     filter === "All"
-      ? opportunities
-      : opportunities.filter((item) => item.type === filter);
+      ? opportunities || []
+      : (opportunities || []).filter((item) => item.type === filter);
 
   return (
     <div className="opportunities-page">
@@ -109,7 +62,9 @@ function Opportunities({ onBack }) {
       </div>
 
       <div className="opportunities-filter-card">
-        <p className="opportunities-filter-label">Filter Opportunities</p>
+        <p className="opportunities-filter-label">
+          Filter Opportunities
+        </p>
 
         <div className="opportunities-filters">
           {filters.map((item) => (
@@ -127,56 +82,75 @@ function Opportunities({ onBack }) {
       </div>
 
       <div className="opportunities-grid">
-        {filteredOpportunities.map((item, index) => (
-          <div className="opportunity-card" key={index}>
 
-            <div className="opportunity-card-header">
-              <div className="opportunity-icon">
-                {item.type === "Internship" && "💼"}
-                {item.type === "Hackathon" && "💻"}
-                {item.type === "Workshop" && "🎓"}
-                {item.type === "Placement" && "🚀"}
-                {item.type === "Competition" && "🏆"}
-                {item.type === "Scholarship" && "🎓"}
+        {!opportunities && (
+          <p>Loading opportunities...</p>
+        )}
+
+        {opportunities &&
+          filteredOpportunities.map((item) => (
+            <div
+              className="opportunity-card"
+              key={item._id}
+            >
+
+              <div className="opportunity-card-header">
+
+                <div className="opportunity-icon">
+                  {item.type === "Internship" && "💼"}
+                  {item.type === "Hackathon" && "💻"}
+                  {item.type === "Workshop" && "🎓"}
+                  {item.type === "Placement" && "🚀"}
+                  {item.type === "Competition" && "🏆"}
+                  {item.type === "Scholarship" && "🎓"}
+                </div>
+
+                <div>
+                  <span className="opportunity-type">
+                    {item.type}
+                  </span>
+
+                  <h2>{item.title}</h2>
+                </div>
+
               </div>
 
-              <div>
-                <span className="opportunity-type">
-                  {item.type}
+              <p className="opportunity-description">
+                {item.description}
+              </p>
+
+              <div className="opportunity-organization">
+                <span>Organization</span>
+                <strong>{item.organization}</strong>
+              </div>
+
+              <div className="opportunity-footer">
+
+                <span className="opportunity-status">
+                  {item.status}
                 </span>
 
-                <h2>{item.title}</h2>
+                <button
+                  className="opportunity-view-btn"
+                  onClick={() =>
+                    alert(
+                      `${item.title}\n\nDetailed information will be added by the authorized college/admin team.`
+                    )
+                  }
+                >
+                  View Details →
+                </button>
+
               </div>
+
             </div>
+          ))}
 
-            <p className="opportunity-description">
-              {item.description}
-            </p>
+        {opportunities &&
+          filteredOpportunities.length === 0 && (
+            <p>No opportunities available for this category.</p>
+          )}
 
-            <div className="opportunity-organization">
-              <span>Organization</span>
-              <strong>{item.organization}</strong>
-            </div>
-
-            <div className="opportunity-footer">
-              <span className="opportunity-status">
-                {item.status}
-              </span>
-
-              <button
-                className="opportunity-view-btn"
-                onClick={() =>
-                  alert(
-                    `${item.title}\n\nDetailed information will be added by the authorized college/admin team.`
-                  )
-                }
-              >
-                View Details →
-              </button>
-            </div>
-
-          </div>
-        ))}
       </div>
 
       <div className="opportunities-footer">

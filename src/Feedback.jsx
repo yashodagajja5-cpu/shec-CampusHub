@@ -1,13 +1,27 @@
 import React, { useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./Feedback.css";
 
 function Feedback({ onBack }) {
   const [category, setCategory] = useState("Academic");
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState("");
+  const [anonymous, setAnonymous] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const student = useQuery(api.students.getStudentByRollNumber, {
+    rollNumber: "DEMO2026AI001",
+  });
+
+  const feedbackData = useQuery(
+    api.feedback.getStudentFeedback,
+    student ? { studentId: student._id } : "skip"
+  );
+
+  const addFeedback = useMutation(api.feedback.addFeedback);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (rating === 0 || !feedback.trim()) {
@@ -15,9 +29,32 @@ function Feedback({ onBack }) {
       return;
     }
 
-    setSubmitted(true);
-    setFeedback("");
-    setRating(0);
+    if (!student) {
+      alert("Student profile is still loading. Please try again.");
+      return;
+    }
+
+    try {
+      await addFeedback({
+        studentId: student._id,
+        category,
+        rating,
+        message: feedback.trim(),
+        anonymous,
+      });
+
+      setSubmitted(true);
+      setFeedback("");
+      setRating(0);
+      setAnonymous(false);
+
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 4000);
+    } catch (error) {
+      console.error("Feedback submission error:", error);
+      alert("Unable to submit feedback. Please try again.");
+    }
   };
 
   return (
@@ -123,7 +160,12 @@ function Feedback({ onBack }) {
             <div className="feedback-options">
 
               <label>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={anonymous}
+                  onChange={(e) => setAnonymous(e.target.checked)}
+                />
+
                 Submit feedback anonymously
               </label>
 
@@ -144,8 +186,10 @@ function Feedback({ onBack }) {
 
           <div>
             <span>💡</span>
+
             <div>
               <strong>Be Constructive</strong>
+
               <p>
                 Share specific suggestions that can help improve
                 the student experience.
@@ -155,8 +199,10 @@ function Feedback({ onBack }) {
 
           <div>
             <span>🔒</span>
+
             <div>
               <strong>Student Privacy</strong>
+
               <p>
                 Feedback should be handled through authorized
                 college administration.
@@ -166,8 +212,10 @@ function Feedback({ onBack }) {
 
           <div>
             <span>🏫</span>
+
             <div>
               <strong>Campus Improvement</strong>
+
               <p>
                 Your suggestions can help identify areas for
                 improvement.

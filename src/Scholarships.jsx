@@ -1,57 +1,112 @@
 import React, { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./Scholarships.css";
 
 function Scholarships({ onBack }) {
   const [filter, setFilter] = useState("All");
 
-  const scholarships = [
-    {
-      name: "PM Vidyalaxmi",
-      provider: "Government of India",
-      academicYear: "2026–27",
-      amount: "₹4,60,000",
-      status: "Approved",
-      appliedDate: "Aug 11, 2026",
-      description:
-        "Education loan / financial support information and application status.",
-    },
-    {
-      name: "NSP Scholarship",
-      provider: "National Scholarship Portal",
-      academicYear: "2026–27",
-      amount: "Under Process",
-      status: "Renewal",
-      appliedDate: "Sep 18, 2026",
-      description:
-        "Scholarship renewal application submitted through the National Scholarship Portal.",
-    },
-    {
-      name: "ONGC Scholarship",
-      provider: "ONGC",
-      academicYear: "2026–27",
-      amount: "Under Review",
-      status: "In Progress",
-      appliedDate: "Sep 2026",
-      description:
-        "Merit-based scholarship application currently under review.",
-    },
-    {
-      name: "Institutional Scholarship",
-      provider: "SHEC",
-      academicYear: "2026–27",
-      amount: "₹25,000",
-      status: "Eligible",
-      appliedDate: "Sep 2026",
-      description:
-        "College scholarship information and eligibility status.",
-    },
+  const student = useQuery(api.students.getStudentByRollNumber, {
+    rollNumber: "DEMO2026AI001",
+  });
+
+  const scholarshipsData = useQuery(
+    api.scholarships.getStudentScholarships,
+    student ? { studentId: student._id } : "skip"
+  );
+
+  const filters = [
+    "All",
+    "Education",
+    "Government",
+    "Merit",
+    "Private",
   ];
+
+  if (student === undefined || scholarshipsData === undefined) {
+    return (
+      <div className="scholarships-page">
+        <header className="scholarships-header">
+          <div>
+            <button className="scholarships-back" onClick={onBack}>
+              ← Back to Dashboard
+            </button>
+
+            <p>FINANCIAL SUPPORT</p>
+
+            <h1>Scholarships</h1>
+
+            <span>
+              Scholarship opportunities and financial support available
+              through SHEC CampusHub
+            </span>
+          </div>
+
+          <div className="scholarship-summary">
+            <strong>—</strong>
+            <span>Scholarship Opportunities</span>
+          </div>
+        </header>
+
+        <section className="scholarship-info">
+          <strong>🎓 Loading Scholarships</strong>
+
+          <span>
+            Scholarship information is being loaded from the CampusHub
+            database.
+          </span>
+        </section>
+      </div>
+    );
+  }
+
+  if (!student) {
+    return (
+      <div className="scholarships-page">
+        <header className="scholarships-header">
+          <div>
+            <button className="scholarships-back" onClick={onBack}>
+              ← Back to Dashboard
+            </button>
+
+            <p>FINANCIAL SUPPORT</p>
+
+            <h1>Scholarships</h1>
+          </div>
+        </header>
+
+        <section className="scholarship-info">
+          <strong>⚠️ Student Not Found</strong>
+
+          <span>
+            The student scholarship profile could not be found.
+          </span>
+        </section>
+      </div>
+    );
+  }
+
+  const scholarships = scholarshipsData || [];
+
+  const formattedScholarships = scholarships.map((scholarship) => ({
+    ...scholarship,
+
+    amountText:
+      scholarship.amount !== undefined
+        ? `₹${scholarship.amount.toLocaleString("en-IN")}`
+        : "Scholarship",
+
+    statusText:
+      scholarship.status === "Under Process"
+        ? "In Progress"
+        : scholarship.status,
+  }));
 
   const filteredScholarships =
     filter === "All"
-      ? scholarships
-      : scholarships.filter(
-          (scholarship) => scholarship.status === filter
+      ? formattedScholarships
+      : formattedScholarships.filter(
+          (scholarship) => scholarship.category === filter
         );
 
   return (
@@ -61,11 +116,7 @@ function Scholarships({ onBack }) {
       <header className="scholarships-header">
 
         <div>
-
-          <button
-            className="scholarships-back"
-            onClick={onBack}
-          >
+          <button className="scholarships-back" onClick={onBack}>
             ← Back to Dashboard
           </button>
 
@@ -74,251 +125,142 @@ function Scholarships({ onBack }) {
           <h1>Scholarships</h1>
 
           <span>
-            Track your scholarship applications and funding status
+            Scholarship opportunities and financial support available
+            through SHEC CampusHub
           </span>
-
         </div>
 
         <div className="scholarship-summary">
-
           <strong>{scholarships.length}</strong>
-
-          <span>
-            Scholarship Records
-          </span>
-
+          <span>Scholarship Opportunities</span>
         </div>
 
       </header>
-
-
-      {/* SUMMARY CARDS */}
-      <section className="scholarship-stats">
-
-        <div className="scholarship-stat-card">
-
-          <div className="stat-icon">
-            🎓
-          </div>
-
-          <div>
-            <span>APPLIED</span>
-            <strong>4</strong>
-          </div>
-
-        </div>
-
-
-        <div className="scholarship-stat-card">
-
-          <div className="stat-icon">
-            ✅
-          </div>
-
-          <div>
-            <span>APPROVED</span>
-            <strong>1</strong>
-          </div>
-
-        </div>
-
-
-        <div className="scholarship-stat-card">
-
-          <div className="stat-icon">
-            ⏳
-          </div>
-
-          <div>
-            <span>IN PROCESS</span>
-            <strong>2</strong>
-          </div>
-
-        </div>
-
-
-        <div className="scholarship-stat-card">
-
-          <div className="stat-icon">
-            💰
-          </div>
-
-          <div>
-            <span>AMOUNT</span>
-            <strong>₹4.60L</strong>
-          </div>
-
-        </div>
-
-      </section>
 
 
       {/* FILTER */}
       <section className="scholarship-filter">
 
         <div>
-
-          <p>APPLICATION STATUS</p>
-
-          <h2>
-            My Scholarships
-          </h2>
-
+          <p>SCHOLARSHIP BOARD</p>
+          <h2>Available Opportunities</h2>
         </div>
-
 
         <div className="scholarship-filter-buttons">
 
-          <button
-            className={filter === "All" ? "selected" : ""}
-            onClick={() => setFilter("All")}
-          >
-            All
-          </button>
-
-          <button
-            className={filter === "Approved" ? "selected" : ""}
-            onClick={() => setFilter("Approved")}
-          >
-            Approved
-          </button>
-
-          <button
-            className={filter === "Renewal" ? "selected" : ""}
-            onClick={() => setFilter("Renewal")}
-          >
-            Renewal
-          </button>
-
-          <button
-            className={filter === "In Progress" ? "selected" : ""}
-            onClick={() => setFilter("In Progress")}
-          >
-            In Progress
-          </button>
-
-          <button
-            className={filter === "Eligible" ? "selected" : ""}
-            onClick={() => setFilter("Eligible")}
-          >
-            Eligible
-          </button>
+          {filters.map((item) => (
+            <button
+              key={item}
+              className={filter === item ? "selected" : ""}
+              onClick={() => setFilter(item)}
+            >
+              {item}
+            </button>
+          ))}
 
         </div>
 
       </section>
 
 
-      {/* SCHOLARSHIP LIST */}
+      {/* SCHOLARSHIPS */}
       <section className="scholarships-list">
 
-        {filteredScholarships.map(
-          (scholarship, index) => (
+        {filteredScholarships.map((scholarship) => (
+          <article
+            className="scholarship-card"
+            key={scholarship._id}
+          >
 
-            <div
-              className="scholarship-card"
-              key={index}
-            >
+            <div className="scholarship-icon">
+              🎓
+            </div>
 
-              <div className="scholarship-card-top">
+            <div className="scholarship-content">
 
-                <div className="scholarship-main">
+              <div className="scholarship-top">
 
-                  <div className="scholarship-icon">
-                    🎓
-                  </div>
-
-                  <div>
-
-                    <span className="provider">
-                      {scholarship.provider}
-                    </span>
-
-                    <h2>
-                      {scholarship.name}
-                    </h2>
-
-                  </div>
-
-                </div>
-
+                <span className="scholarship-category">
+                  {scholarship.category || "General"}
+                </span>
 
                 <span
-                  className={`scholarship-status ${scholarship.status
-                    .toLowerCase()
-                    .replace(" ", "-")}`}
+                  className={`scholarship-status ${
+                    scholarship.status === "Approved"
+                      ? "approved"
+                      : scholarship.status === "Applied"
+                      ? "applied"
+                      : scholarship.status === "Under Process"
+                      ? "progress"
+                      : scholarship.status === "Eligible"
+                      ? "available"
+                      : "rejected"
+                  }`}
                 >
-                  {scholarship.status}
+                  {scholarship.status === "Under Process"
+                    ? "In Progress"
+                    : scholarship.status}
                 </span>
 
               </div>
 
+              <h2>{scholarship.scholarshipName}</h2>
 
-              <p className="scholarship-description">
-                {scholarship.description}
+              <p>
+                {scholarship.provider} scholarship support for eligible
+                students.
               </p>
-
 
               <div className="scholarship-details">
 
                 <div>
-                  <span>ACADEMIC YEAR</span>
-                  <strong>
-                    {scholarship.academicYear}
-                  </strong>
+                  <small>Provider</small>
+                  <strong>{scholarship.provider}</strong>
                 </div>
 
                 <div>
-                  <span>AMOUNT / STATUS</span>
-                  <strong>
-                    {scholarship.amount}
-                  </strong>
+                  <small>Support</small>
+                  <strong>{scholarship.amountText}</strong>
                 </div>
 
                 <div>
-                  <span>APPLIED / UPDATED</span>
-                  <strong>
-                    {scholarship.appliedDate}
-                  </strong>
+                  <small>Academic Year</small>
+                  <strong>{scholarship.academicYear}</strong>
                 </div>
 
               </div>
 
+              <div className="scholarship-footer">
 
-              <div className="scholarship-actions">
+                <span>
+                  📌 {scholarship.status === "Under Process"
+                    ? "In Progress"
+                    : scholarship.status}
+                </span>
 
-                <button className="view-scholarship">
+                <button>
                   View Details →
                 </button>
-
-                {scholarship.status === "Approved" && (
-                  <button className="download-scholarship">
-                    Download Confirmation
-                  </button>
-                )}
 
               </div>
 
             </div>
 
-          )
-        )}
+          </article>
+        ))}
 
       </section>
 
 
       {/* INFORMATION */}
-      <section className="scholarship-note">
+      <section className="scholarship-info">
 
-        <strong>
-          📌 Scholarship Information
-        </strong>
+        <strong>💡 Scholarship Support</strong>
 
         <span>
-          Scholarship applications, renewal status, approvals and
-          related documents can be tracked through CampusHub.
-          Final status and financial information should be updated
-          only by authorized college administrators.
+          Students can use CampusHub to view scholarship opportunities,
+          track applications, renewal status and important financial
+          support information.
         </span>
 
       </section>

@@ -1,73 +1,77 @@
 import React, { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./StudyMaterials.css";
 
 function StudyMaterials({ onBack }) {
   const [selectedSubject, setSelectedSubject] = useState("All");
 
-  const materials = [
+  // Get study materials from Convex
+  const materialsData = useQuery(
+    api.studyMaterials.getStudentStudyMaterials,
     {
-      subject: "Advanced Data Structures",
-      code: "ADS",
-      type: "Notes",
-      title: "Trees and AVL Trees",
-      faculty: "CSE Faculty",
-      date: "Sep 28, 2026",
-    },
-    {
-      subject: "Advanced Data Structures",
-      code: "ADS",
-      type: "PDF",
-      title: "Heap and Priority Queue",
-      faculty: "CSE Faculty",
-      date: "Sep 25, 2026",
-    },
-    {
-      subject: "Java Programming",
-      code: "JAVA",
-      type: "Notes",
-      title: "Object Oriented Programming",
-      faculty: "CSE Faculty",
-      date: "Sep 27, 2026",
-    },
-    {
-      subject: "Java Programming",
-      code: "JAVA",
-      type: "PDF",
-      title: "Inheritance and Polymorphism",
-      faculty: "CSE Faculty",
-      date: "Sep 24, 2026",
-    },
-    {
-      subject: "Database Management Systems",
-      code: "DBMS",
-      type: "Notes",
-      title: "SQL and Relational Algebra",
-      faculty: "CSE Faculty",
-      date: "Sep 26, 2026",
-    },
-    {
-      subject: "Mathematics",
-      code: "MATHS",
-      type: "PDF",
-      title: "Unit 1 Important Problems",
-      faculty: "Mathematics Faculty",
-      date: "Sep 23, 2026",
-    },
+      branch: "CSE – AI & DS",
+      semester: "2-1",
+    }
+  );
+
+  // Loading state
+  if (materialsData === undefined) {
+    return (
+      <div className="materials-page">
+        <header className="materials-header">
+          <div>
+            <button
+              className="materials-back"
+              onClick={onBack}
+            >
+              ← Back to Dashboard
+            </button>
+
+            <p>LEARNING</p>
+
+            <h1>Study Materials</h1>
+
+            <span>
+              2-1 • CSE – AI & DS • Section A • 2026–27
+            </span>
+          </div>
+
+          <div className="materials-summary">
+            <strong>—</strong>
+            <span>Available Materials</span>
+          </div>
+        </header>
+
+        <section className="materials-note">
+          <strong>📚 Loading Materials</strong>
+
+          <span>
+            Study materials are being loaded from the CampusHub database.
+          </span>
+        </section>
+      </div>
+    );
+  }
+
+  const materials = materialsData || [];
+
+  // Get unique subjects from database
+  const subjectNames = [
+    ...new Set(
+      materials.map((material) => material.subjectName)
+    ),
   ];
 
-  const subjects = [
-    "All",
-    "Advanced Data Structures",
-    "Java Programming",
-    "Database Management Systems",
-    "Mathematics",
-  ];
+  const subjects = ["All", ...subjectNames];
 
+  // Filter materials
   const filteredMaterials =
     selectedSubject === "All"
       ? materials
       : materials.filter(
-          (material) => material.subject === selectedSubject
+          (material) =>
+            material.subjectName === selectedSubject
         );
 
   return (
@@ -111,10 +115,15 @@ function StudyMaterials({ onBack }) {
 
         <select
           value={selectedSubject}
-          onChange={(e) => setSelectedSubject(e.target.value)}
+          onChange={(e) =>
+            setSelectedSubject(e.target.value)
+          }
         >
           {subjects.map((subject) => (
-            <option key={subject} value={subject}>
+            <option
+              key={subject}
+              value={subject}
+            >
               {subject}
             </option>
           ))}
@@ -126,52 +135,92 @@ function StudyMaterials({ onBack }) {
       {/* MATERIAL CARDS */}
       <section className="materials-grid">
 
-        {filteredMaterials.map((material, index) => (
+        {filteredMaterials.length === 0 ? (
 
-          <div
-            className="material-card"
-            key={index}
-          >
+          <div className="materials-note">
+            <strong>📚 No Materials Found</strong>
 
-            <div className="material-top">
-
-              <div className="material-icon">
-                {material.type === "PDF" ? "📄" : "📚"}
-              </div>
-
-              <span className="material-type">
-                {material.type}
-              </span>
-
-            </div>
-
-
-            <h2>{material.title}</h2>
-
-            <p className="material-subject">
-              {material.subject}
-            </p>
-
-            <div className="material-info">
-
-              <span>
-                👨‍🏫 {material.faculty}
-              </span>
-
-              <span>
-                📅 {material.date}
-              </span>
-
-            </div>
-
-
-            <button className="material-btn">
-              View Material →
-            </button>
-
+            <span>
+              No study materials are currently available
+              for the selected subject.
+            </span>
           </div>
 
-        ))}
+        ) : (
+
+          filteredMaterials.map((material) => (
+
+            <div
+              className="material-card"
+              key={material._id}
+            >
+
+              <div className="material-top">
+
+                <div className="material-icon">
+                  {material.type === "PDF"
+                    ? "📄"
+                    : material.type === "PPT"
+                    ? "📊"
+                    : material.type === "Video"
+                    ? "🎥"
+                    : material.type === "Link"
+                    ? "🔗"
+                    : "📚"}
+                </div>
+
+                <span className="material-type">
+                  {material.type}
+                </span>
+
+              </div>
+
+
+              <h2>{material.title}</h2>
+
+              <p className="material-subject">
+                {material.subjectName}
+              </p>
+
+              <div className="material-info">
+
+                <span>
+                  👨‍🏫 {material.facultyName}
+                </span>
+
+                <span>
+                  📅{" "}
+                  {new Date(
+                    material.createdAt
+                  ).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
+
+              </div>
+
+
+              <button
+                className="material-btn"
+                onClick={() => {
+                  if (material.fileUrl) {
+                    window.open(
+                      material.fileUrl,
+                      "_blank"
+                    );
+                  }
+                }}
+              >
+                View Material →
+              </button>
+
+            </div>
+
+          ))
+
+        )}
 
       </section>
 

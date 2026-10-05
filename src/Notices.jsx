@@ -1,51 +1,12 @@
 import React, { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import "./Notices.css";
 
 function Notices({ onBack }) {
   const [category, setCategory] = useState("All");
 
-  const notices = [
-    {
-      title: "Mid Examination Schedule",
-      category: "Examinations",
-      date: "Sep 30, 2026",
-      priority: "Important",
-      description:
-        "The mid examination schedule for the current semester has been published.",
-    },
-    {
-      title: "Attendance Review Notice",
-      category: "Academic",
-      date: "Sep 29, 2026",
-      priority: "Important",
-      description:
-        "Students are advised to regularly check their subject-wise attendance.",
-    },
-    {
-      title: "AI & ML Workshop",
-      category: "Events",
-      date: "Sep 28, 2026",
-      priority: "General",
-      description:
-        "A technical workshop on Artificial Intelligence and Machine Learning is scheduled for students.",
-    },
-    {
-      title: "Scholarship Renewal – 2026–27",
-      category: "Scholarships",
-      date: "Sep 26, 2026",
-      priority: "Important",
-      description:
-        "Students eligible for scholarship renewal are requested to complete the required process.",
-    },
-    {
-      title: "Campus Holiday Notice",
-      category: "General",
-      date: "Sep 25, 2026",
-      priority: "General",
-      description:
-        "Students are requested to check the academic calendar for upcoming holidays.",
-    },
-  ];
+  const noticesData = useQuery(api.notices.getPublishedNotices);
 
   const categories = [
     "All",
@@ -56,10 +17,60 @@ function Notices({ onBack }) {
     "General",
   ];
 
+  if (noticesData === undefined) {
+    return (
+      <div className="notices-page">
+        <header className="notices-header">
+          <div>
+            <button className="notices-back" onClick={onBack}>
+              ← Back to Dashboard
+            </button>
+
+            <p>CAMPUS COMMUNICATION</p>
+
+            <h1>Notices</h1>
+
+            <span>
+              Important announcements and updates from SHEC CampusHub
+            </span>
+          </div>
+
+          <div className="notice-count">
+            <strong>—</strong>
+            <span>Latest Notices</span>
+          </div>
+        </header>
+
+        <section className="notice-info">
+          <strong>📢 Loading Notices</strong>
+
+          <span>
+            Notices are being loaded from the CampusHub database.
+          </span>
+        </section>
+      </div>
+    );
+  }
+
+  const notices = noticesData || [];
+
+  const formattedNotices = notices.map((notice) => ({
+    ...notice,
+    date: notice.publishDate,
+    priority:
+      notice.priority === "High"
+        ? "Important"
+        : notice.priority === "Medium"
+        ? "General"
+        : "General",
+  }));
+
   const filteredNotices =
     category === "All"
-      ? notices
-      : notices.filter((notice) => notice.category === category);
+      ? formattedNotices
+      : formattedNotices.filter(
+          (notice) => notice.category === category
+        );
 
   return (
     <div className="notices-page">
@@ -117,8 +128,8 @@ function Notices({ onBack }) {
       {/* NOTICES */}
       <section className="notices-list">
 
-        {filteredNotices.map((notice, index) => (
-          <article className="notice-card" key={index}>
+        {filteredNotices.map((notice) => (
+          <article className="notice-card" key={notice._id}>
 
             <div className="notice-icon">
               📢
